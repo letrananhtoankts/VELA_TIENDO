@@ -275,7 +275,9 @@ header{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;displ
 .map-loading{position:absolute;inset:0;background:rgba(15,23,42,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;font-size:12px;color:#94a3b8}
 
 /* RIGHT PANEL */
-.panel{width:420px;flex-shrink:0;background:#f8fafc;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.panel{width:420px;min-width:280px;max-width:55vw;flex-shrink:0;background:#f8fafc;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;position:relative}
+.panel-resize-handle{position:absolute;left:0;top:0;bottom:0;width:5px;cursor:col-resize;background:transparent;z-index:20;transition:background .15s}
+.panel-resize-handle:hover,.panel-resize-handle.dragging{background:var(--gold)}
 .pe{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;color:var(--muted)}
 .peico{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f0ebe0,#e5ddd0);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:22px}
 .pe h3{font-size:12px;font-weight:500;margin-bottom:3px;color:var(--text)}
@@ -839,7 +841,8 @@ option{background:#111827}
         <div class="zc"><div class="zb" onclick="zoom(1.25)">+</div><div class="zb" onclick="zoom(0.8)">−</div><div class="zb" onclick="resetZoom()" style="font-size:8px">FIT</div></div>
         <div id="rubberband"></div>
       </div>
-      <div class="panel">
+      <div class="panel" id="right-panel">
+        <div class="panel-resize-handle" id="panel-resize-handle" title="Kéo để thay đổi độ rộng"></div>
         <div class="pe" id="pe"><div class="peico">🏡</div><h3>Chọn căn hộ</h3><p>Click vào căn trên bản đồ<br>để xem chi tiết tiến độ</p></div>
         <div class="pb" id="pb">
           <div id="villa-img-wrap"></div>
@@ -3135,8 +3138,39 @@ async function submitWlUpdate(){
 }
 
 // ════════════════════════════════════════
-// LOGO MANAGEMENT
+// RESIZABLE PANEL
 // ════════════════════════════════════════
+(function(){
+  const handle = document.getElementById('panel-resize-handle');
+  const panel  = document.getElementById('right-panel');
+  if(!handle||!panel) return;
+  let startX=0, startW=0, dragging=false;
+  handle.addEventListener('mousedown', e=>{
+    dragging=true; startX=e.clientX; startW=panel.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor='col-resize';
+    document.body.style.userSelect='none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    const diff = startX - e.clientX; // kéo sang trái = rộng ra
+    const newW = Math.min(Math.max(startW+diff, 280), window.innerWidth*0.6);
+    panel.style.width = newW+'px';
+  });
+  document.addEventListener('mouseup', ()=>{
+    if(!dragging) return;
+    dragging=false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor='';
+    document.body.style.userSelect='';
+    // Lưu vào localStorage
+    localStorage.setItem('vela_panel_width', panel.offsetWidth);
+  });
+  // Khôi phục width đã lưu
+  const saved = localStorage.getItem('vela_panel_width');
+  if(saved) panel.style.width = Math.min(Math.max(parseInt(saved),280),window.innerWidth*0.6)+'px';
+})();
 const LOGO_KEY = 'vela_logo_url';
 
 function applyLogo(url) {
