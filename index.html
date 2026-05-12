@@ -440,7 +440,40 @@ option{background:#111827}
 .admin-lock h3{font-size:14px;font-weight:600;color:#475569}
 .admin-lock p{font-size:11px;line-height:1.7}
 
-/* ── PHOTO EVIDENCE ── */
+/* ── WORKLOG TABLE ── */
+.wl-section{padding:10px 12px;border-top:1px solid var(--border)}
+.wl-table{width:100%;border-collapse:collapse;font-size:10px;margin-top:6px}
+.wl-table th{background:#111827;color:#64748b;font-weight:600;padding:5px 6px;text-align:center;border:1px solid #1e293b;font-size:9px;letter-spacing:.04em}
+.wl-table th:first-child{text-align:left}
+.wl-table td{padding:5px 6px;border:1px solid #1e293b;text-align:center;vertical-align:middle}
+.wl-table td:first-child{font-weight:600;color:#94a3b8;font-size:9px;text-align:left}
+.wl-cell-done{background:rgba(52,211,153,.1);cursor:pointer;position:relative}
+.wl-cell-done:hover{background:rgba(52,211,153,.2)}
+.wl-cell-doing{background:rgba(200,169,110,.1);cursor:pointer}
+.wl-cell-pend{background:transparent;color:#334155}
+.wl-cell-locked{background:#0f172a;color:#1e293b}
+.wl-tick{color:#34d399;font-size:11px;font-weight:700}
+.wl-doing-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s infinite}
+.wl-date{font-size:8px;color:#475569;display:block;margin-top:1px}
+.wl-photo-ico{font-size:9px;opacity:.6}
+/* Nút cập nhật trong cell */
+.wl-upd-btn{font-family:inherit;font-size:8px;background:var(--gold);color:#0f172a;border:none;border-radius:4px;padding:2px 6px;cursor:pointer;margin-top:2px;font-weight:600}
+.wl-upd-btn:hover{opacity:.85}
+/* Form cập nhật WorkLog */
+.wl-form{background:rgba(255,255,255,.04);border-radius:8px;padding:10px;margin-top:8px;border:1px solid #1e293b}
+.wl-form-title{font-size:10px;font-weight:700;color:#93c5fd;margin-bottom:8px}
+.wl-form-row{display:flex;gap:6px;margin-bottom:6px;align-items:flex-end}
+.wl-form-sel{flex:1;background:#0f172a;border:1px solid #1e293b;border-radius:5px;padding:5px 8px;font-size:11px;color:#e2e8f0;font-family:inherit;outline:none}
+.wl-form-date{background:#0f172a;border:1px solid #1e293b;border-radius:5px;padding:5px 8px;font-size:11px;color:#e2e8f0;font-family:inherit;outline:none;width:100%}
+/* Mobile WorkLog */
+.bs-wl-table{width:100%;border-collapse:collapse;font-size:11px;margin:0 0 12px}
+.bs-wl-table th{background:#1e293b;color:#64748b;font-weight:600;padding:6px 5px;text-align:center;border:1px solid #334155;font-size:9px}
+.bs-wl-table th:first-child{text-align:left}
+.bs-wl-table td{padding:6px 5px;border:1px solid #334155;text-align:center;vertical-align:middle;font-size:10px}
+.bs-wl-table td:first-child{font-weight:600;color:#94a3b8;font-size:9px;text-align:left}
+.bs-wl-done{background:rgba(52,211,153,.1)}
+.bs-wl-doing{background:rgba(200,169,110,.12)}
+.bs-wl-locked{background:#0f172a;color:#1e293b}
 .photo-section{padding:10px 12px;border-top:1px solid var(--border)}
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
 .photo-card{position:relative;border-radius:8px;overflow:hidden;background:#f1f5f9;cursor:pointer;border:1px solid var(--border);aspect-ratio:4/3}
@@ -682,20 +715,30 @@ option{background:#111827}
     </div>
 
     <div class="bs-scroll-area">
-      <!-- TAB XEM: Timeline mốc + ảnh -->
+      <!-- TAB XEM: Timeline mốc + ảnh + WorkLog -->
       <div class="bs-tab-pane active" id="bs-pane-view">
-        <div class="bs-timeline" id="bs-timeline">
-          <!-- render bằng JS -->
+        <div class="bs-timeline" id="bs-timeline"></div>
+        <!-- WorkLog table mobile -->
+        <div style="padding:0 18px 14px" id="bs-wl-wrap">
+          <div style="font-size:11px;font-weight:700;color:#93c5fd;margin-bottom:8px">📊 Công tác chi tiết</div>
+          <div id="bs-wl-table-wrap"></div>
         </div>
       </div>
 
-      <!-- TAB CẬP NHẬT: Form upload -->
+      <!-- TAB CẬP NHẬT: WorkLog Form -->
       <div class="bs-tab-pane" id="bs-pane-edit">
         <div id="bs-form-wrap">
           <div class="bs-section">
-            <div class="bs-label">Mốc thi công mới</div>
-            <select class="bs-ms-sel" id="bs-ms-sel"></select>
-            <div class="bs-label">Ngày cập nhật</div>
+            <div class="bs-label">Công tác</div>
+            <select class="bs-ms-sel" id="bs-wt-sel" onchange="updateBsMobFloors()">
+              <option value="DS">Dầm sàn</option>
+              <option value="COT">Cột</option>
+              <option value="XT">Xây tường</option>
+              <option value="TT">Tô tường</option>
+            </select>
+            <div class="bs-label">Tầng</div>
+            <select class="bs-ms-sel" id="bs-floor-sel"></select>
+            <div class="bs-label">Ngày hoàn thành</div>
             <input type="date" class="bs-date-inp" id="bs-date-inp">
             <div class="bs-label" style="margin-top:4px">📷 Ảnh nghiệm thu <span style="font-size:8px;color:#475569">(bắt buộc)</span></div>
             <div id="bs-photo-preview-wrap" style="display:none;position:relative;margin-bottom:8px">
@@ -711,7 +754,7 @@ option{background:#111827}
           </div>
           <div class="bs-btns">
             <button class="bs-cancel-btn" onclick="switchBsTab('view')">← Quay lại</button>
-            <button class="bs-save-btn" id="bs-save-btn" onclick="submitMobProgress()">✓ Lưu tiến độ</button>
+            <button class="bs-save-btn" id="bs-save-btn" onclick="submitMobWlProgress()">✓ Lưu công tác</button>
           </div>
         </div>
       </div>
@@ -824,6 +867,39 @@ option{background:#111827}
           <div class="ig"><div class="ic"><div class="icl">Loại căn</div><div class="icv" id="ptype">—</div></div><div class="ic"><div class="icl">Diện tích</div><div class="icv" id="parea">—</div></div></div>
           <div class="ps"><div class="sttl">Mốc thi công</div><div id="pms"></div><div class="pbw"><div class="pb2" id="pbar" style="width:0%"></div></div><div class="pp" id="ppct">0%</div></div>
           <div class="kls"><div class="sttl">Khối lượng</div><div class="kl-chart-wrap"><canvas id="kl-chart"></canvas></div><div id="kli"></div></div>
+          <!-- WorkLog Section -->
+          <div class="wl-section" id="desktop-wl-section">
+            <div class="sttl">📊 Tiến độ công tác chi tiết</div>
+            <div id="desktop-wl-table-wrap"></div>
+            <div class="wl-form" id="desktop-wl-form" style="display:none">
+              <div class="wl-form-title" id="desktop-wl-form-title">Cập nhật công tác</div>
+              <input id="wl-villa-id" type="hidden" value="">
+              <input id="wl-worktype" type="hidden" value="">
+              <input id="wl-floor" type="hidden" value="">
+              <div class="wl-form-row">
+                <div style="flex:1">
+                  <div style="font-size:8px;color:#64748b;margin-bottom:3px">Ngày hoàn thành</div>
+                  <input id="wl-date" type="date" class="wl-form-date">
+                </div>
+              </div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:8px;color:#64748b;margin-bottom:4px">📷 Ảnh nghiệm thu <span style="color:#475569">(bắt buộc)</span></div>
+                <div id="wl-photo-preview-wrap" style="display:none;position:relative;margin-bottom:6px">
+                  <img id="wl-photo-preview" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px" src="" alt="">
+                  <button onclick="clearWlPhoto()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:11px;font-family:inherit">✕</button>
+                </div>
+                <div class="photo-upload-area" id="wl-upload-area" style="padding:8px">
+                  <input type="file" id="wl-photo-input" accept="image/*" onchange="onWlPhotoSelected(this)">
+                  <div style="font-size:10px;color:#64748b">📷 Chọn ảnh nghiệm thu</div>
+                </div>
+                <div class="upload-prog" id="wl-upload-prog"><div class="upload-prog-fill" id="wl-upload-fill"></div></div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button onclick="submitWlUpdate()" style="flex:2;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:none;background:#10b981;color:#fff;font-weight:600">✓ Lưu công tác</button>
+                <button onclick="closeWlForm()" style="flex:1;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:1px solid #334155;background:transparent;color:#64748b">✕ Hủy</button>
+              </div>
+            </div>
+          </div>
           <!-- Photo Evidence Section -->
           <div class="photo-section">
             <div class="sttl">📷 Ảnh nghiệm thu</div>
@@ -986,9 +1062,9 @@ option{background:#111827}
 // ════════════════════════════════════════
 // CONFIG
 // ════════════════════════════════════════
-const REGISTRY_ID = '1-NqulTWUATeH9aeqMZa2u3OneIyMCcxZP4Xattv_gq8';
-const API_KEY     = 'AIzaSyAKQqs9_7s01e7QSAiHGAXGxbnJbNR6xdE';
-const CLIENT_ID   = '1069424677453-q01g7bl0vsaom4so4o9gcpp42ukcosss.apps.googleusercontent.com';
+const REGISTRY_ID = '1vhwwEt5CD7n_lqRBInCag-75o_MwgpHXqsB-xb2xfOY';
+const API_KEY     = 'AIzaSyA0RIegBVbU_FBU5_kCT9IGNswN0f_1b68';
+const CLIENT_ID   = '775858800222-53qik12lr7slpb8ghctg617nqti9t4l4.apps.googleusercontent.com';
 const SCOPES      = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
 const DRIVE_FOLDER_NAME = 'VELA E&C_EVIDENCE';
 const AUTO_REFRESH_MIN = 5;
@@ -1321,10 +1397,14 @@ async function loadProjectData(){
     VI={};
     (rV.values||[]).slice(1).forEach(row=>{
       const id=row[0];if(!id)return;
-      VI[id]={type:row[1]||'—',sub:row[2]||'—',area:row[3]?row[3]+' m²':'—',imageUrl:driveDirect(row[4]||'')};
+      VI[id]={type:row[1]||'—',sub:row[2]||'—',area:row[3]?row[3]+' m²':'—',imageUrl:driveDirect(row[4]||''),floors:parseInt(row[5])||0};
     });
     setupMapSVG();updateProjSummary();renderMobileOverview();
-    // Load PhotoLog sau (không block map render)
+    // Load WorkLog sau (không block map render)
+    loadWorkLog().then(()=>{
+      // Nếu đang xem 1 căn thì refresh WL table
+      if(sel) renderDesktopWLTable(sel);
+    });
     loadPhotoLog();
     document.getElementById('lupd').textContent='Cập nhật: '+new Date().toLocaleTimeString('vi-VN');
     document.getElementById('mob-upd-date').textContent=new Date().toLocaleDateString('vi-VN');
@@ -1491,6 +1571,8 @@ function showSinglePanel(id){
   klChart=new Chart(ctx,{type:'doughnut',data:{labels:['BT','CT','CF'],datasets:[{data:[pc,100-pc],backgroundColor:['#60a5fa','#1e3a5f'],borderWidth:0},{data:[pr,100-pr],backgroundColor:['#34d399','#14532d'],borderWidth:0},{data:[pf,100-pf],backgroundColor:['#fbbf24','#451a03'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'35%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){const v=[pc,pr,pf];if(c.dataIndex===0)return['Bê tông','Cốt thép','Coppha'][c.datasetIndex]+': '+v[c.datasetIndex]+'%';return null;}}}}}});
   document.getElementById('kli').innerHTML=[{name:'Bê tông',unit:'m³',d:k.cd,t:k.cp,p:pc,color:'#60a5fa'},{name:'Cốt thép',unit:'tấn',d:k.rd,t:k.rp,p:pr,color:'#34d399'},{name:'Coppha',unit:'m²',d:k.fd,t:k.fp,p:pf,color:'#fbbf24'}].map(item=>`<div class="ki"><div class="kh"><div style="display:flex;align-items:center;gap:4px"><div style="width:6px;height:6px;border-radius:50%;background:${item.color};flex-shrink:0"></div><span class="kn">${item.name}</span></div><div class="kstats"><span class="knum">${fmt(item.d)} / ${fmt(item.t)} ${item.unit}</span><span class="kpct-badge" style="background:${pColor(item.p)}22;color:${pColor(item.p)}">${item.p}%</span></div></div><div class="kbw"><div class="kb" style="width:${item.p}%;background:${item.color}"></div></div></div>`).join('');
   document.getElementById('pf').textContent=s.date?'Cập nhật: '+s.date:'Chưa có dữ liệu';
+  // Render WorkLog table
+  renderDesktopWLTable(id);
   // Render photo evidence
   renderDesktopPhotoGrid(id);
   // Show/hide update button based on role
@@ -2750,6 +2832,257 @@ function mobClickUnit(id){
 // BOTTOM SHEET
 // ════════════════════════════════════════
 // ════════════════════════════════════════
+// WORKLOG ENGINE (V5)
+// ════════════════════════════════════════
+
+let WL = {};
+
+function getFloors(villaId){
+  const vi=VI[villaId]||{};
+  const n=parseInt(vi.floors)||0;
+  if(n<=0) return [];
+  const fl=[];
+  for(let i=1;i<=n;i++) fl.push('T'+i);
+  fl.push('MAI');
+  return fl;
+}
+
+async function loadWorkLog(){
+  if(!CUR) return;
+  WL={};
+  try{
+    const data=await gapi(CUR.sheetId,'WorkLog!A:G');
+    const rows=(data.values||[]).slice(1).filter(r=>r[0]);
+    rows.forEach(r=>{
+      const[villa,wt,floor,status,date,fileId,photoTime]=r;
+      if(!WL[villa]) WL[villa]={};
+      if(!WL[villa][wt]) WL[villa][wt]={};
+      WL[villa][wt][floor]={status:status||'',date:date||'',fileId:fileId||'',photoTime:photoTime||''};
+    });
+  }catch(e){console.warn('WorkLog:',e.message);}
+}
+
+function calcMilestoneFromWL(villaId){
+  const floors=getFloors(villaId);
+  const wl=WL[villaId]||{};
+  const nonMai=floors.filter(f=>f!=='MAI');
+  const allTTDone=nonMai.length&&nonMai.every(f=>wl['TT']&&wl['TT'][f]&&wl['TT'][f].status==='done');
+  const maiDone=wl['DS']&&wl['DS']['MAI']&&wl['DS']['MAI'].status==='done';
+  if(allTTDone&&maiDone) return 'DONE';
+  const kcOrder=[];
+  nonMai.forEach(f=>{
+    kcOrder.push({code:'DS'+f.replace('T',''),wt:'DS',floor:f});
+    kcOrder.push({code:'COT'+f.replace('T',''),wt:'COT',floor:f});
+  });
+  kcOrder.push({code:'DSMAI',wt:'DS',floor:'MAI'});
+  let highest=null;
+  kcOrder.forEach(k=>{if(wl[k.wt]&&wl[k.wt][k.floor]&&wl[k.wt][k.floor].status==='done')highest=k.code;});
+  return highest;
+}
+
+function isWLUnlocked(villaId,wt,floor){
+  const wl=WL[villaId]||{};
+  const floors=getFloors(villaId);
+  const flIdx=floors.indexOf(floor);
+  if(flIdx<0) return false;
+  const prevFloor=flIdx>0?floors[flIdx-1]:null;
+  const done=(w,f)=>wl[w]&&wl[w][f]&&wl[w][f].status==='done';
+  if(wt==='DS') return !prevFloor||done('COT',prevFloor);
+  if(wt==='COT') return done('DS',floor);
+  if(wt==='XT'){
+    if(floor==='MAI') return false;
+    return done('COT',floor)&&(!prevFloor||done('XT',prevFloor));
+  }
+  if(wt==='TT'){
+    if(floor==='MAI') return false;
+    return done('XT',floor);
+  }
+  return false;
+}
+
+function renderDesktopWLTable(villaId){
+  const wrap=document.getElementById('desktop-wl-table-wrap');
+  if(!wrap) return;
+  const floors=getFloors(villaId);
+  const wl=WL[villaId]||{};
+  if(!floors.length){wrap.innerHTML='<div style="font-size:10px;color:#475569;padding:8px 0">Chưa khai báo số tầng (cột Floors trong VillaInfo)</div>';return;}
+  const wtCols=[{code:'DS',name:'Dầm sàn'},{code:'COT',name:'Cột'},{code:'XT',name:'Xây tường'},{code:'TT',name:'Tô tường'}];
+  let html=`<table class="wl-table"><thead><tr><th>Tầng</th>${wtCols.map(w=>`<th>${w.name}</th>`).join('')}</tr></thead><tbody>`;
+  floors.forEach(floor=>{
+    html+=`<tr><td>${floor==='MAI'?'Mái':floor}</td>`;
+    wtCols.forEach(w=>{
+      if(floor==='MAI'&&w.code!=='DS'){html+=`<td class="wl-cell-locked">—</td>`;return;}
+      const entry=wl[w.code]&&wl[w.code][floor];
+      const status=entry?entry.status:'';
+      const unlocked=isWLUnlocked(villaId,w.code,floor);
+      const hasPhoto=entry&&entry.fileId;
+      if(status==='done'){
+        html+=`<td class="wl-cell-done" ${hasPhoto?`onclick="openLightbox('${driveThumbUrl(entry.fileId,1200)}','${villaId} ${w.name} ${floor}','${entry.photoTime||''}')"`:''}>
+          <span class="wl-tick">✓</span><span class="wl-date">${entry.date||''}</span>
+          ${hasPhoto?'<span class="wl-photo-ico">📷</span>':''}
+          ${canEdit()?`<button class="wl-upd-btn" onclick="event.stopPropagation();openWlForm('${villaId}','${w.code}','${floor}')">Sửa</button>`:''}
+        </td>`;
+      } else if(unlocked){
+        html+=`<td class="wl-cell-doing">
+          <span class="wl-doing-dot"></span>
+          ${canEdit()?`<button class="wl-upd-btn" onclick="openWlForm('${villaId}','${w.code}','${floor}')">${status?'Cập nhật':'Bắt đầu'}</button>`:''}
+        </td>`;
+      } else {
+        html+=`<td class="wl-cell-locked">—</td>`;
+      }
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  wrap.innerHTML=html;
+}
+
+function renderMobWLTable(villaId){
+  const wrap=document.getElementById('bs-wl-table-wrap');
+  if(!wrap) return;
+  const floors=getFloors(villaId);
+  const wl=WL[villaId]||{};
+  if(!floors.length){wrap.innerHTML='<div style="font-size:11px;color:#475569">Chưa khai báo số tầng</div>';return;}
+  const wtCols=[{code:'DS',name:'Dầm'},{code:'COT',name:'Cột'},{code:'XT',name:'Xây'},{code:'TT',name:'Tô'}];
+  let html=`<table class="bs-wl-table"><thead><tr><th>Tầng</th>${wtCols.map(w=>`<th>${w.name}</th>`).join('')}</tr></thead><tbody>`;
+  floors.forEach(floor=>{
+    html+=`<tr><td>${floor==='MAI'?'Mái':floor}</td>`;
+    wtCols.forEach(w=>{
+      if(floor==='MAI'&&w.code!=='DS'){html+=`<td class="bs-wl-locked">—</td>`;return;}
+      const entry=wl[w.code]&&wl[w.code][floor];
+      const status=entry?entry.status:'';
+      const unlocked=isWLUnlocked(villaId,w.code,floor);
+      const hasPhoto=entry&&entry.fileId;
+      if(status==='done'){
+        html+=`<td class="bs-wl-done" ${hasPhoto?`onclick="openLightbox('${driveThumbUrl(entry.fileId,1200)}','${villaId} ${w.name} ${floor}','${entry.photoTime||''}')"`:''}>
+          <span style="color:#34d399;font-weight:700">✓</span>${hasPhoto?' 📷':''}
+        </td>`;
+      } else if(unlocked){
+        html+=`<td class="bs-wl-doing" onclick="switchBsTab('edit');setTimeout(()=>openMobWlForm('${villaId}','${w.code}','${floor}'),100)">
+          <span style="color:var(--gold);font-size:12px">▶</span>
+        </td>`;
+      } else {
+        html+=`<td class="bs-wl-locked">—</td>`;
+      }
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  if(canEdit()) html+=`<button onclick="switchBsTab('edit')" style="width:100%;font-family:inherit;font-size:12px;padding:8px;border-radius:8px;border:1px dashed #334155;background:transparent;color:#64748b;cursor:pointer;margin-top:6px">✏️ Cập nhật công tác</button>`;
+  wrap.innerHTML=html;
+}
+
+// Mobile WL form — dùng chung form edit tab nhưng thêm dropdown công tác + tầng
+let _wlPhotoFile=null,_wlVilla='',_wlWt='',_wlFloor='';
+
+function openWlForm(villaId,wt,floor){
+  _wlVilla=villaId;_wlWt=wt;_wlFloor=floor;
+  const wtName={'DS':'Dầm sàn','COT':'Cột','XT':'Xây tường','TT':'Tô tường'};
+  document.getElementById('desktop-wl-form-title').textContent=`Cập nhật: ${wtName[wt]||wt} — ${floor==='MAI'?'Mái':floor}`;
+  const now=new Date();
+  document.getElementById('wl-date').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  clearWlPhoto();
+  document.getElementById('desktop-wl-form').style.display='';
+  document.getElementById('desktop-wl-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function openMobWlForm(villaId,wt,floor){
+  _wlVilla=villaId;_wlWt=wt;_wlFloor=floor;
+  const wtName={'DS':'Dầm sàn','COT':'Cột','XT':'Xây tường','TT':'Tô tường'};
+  // Hiện thông tin trong tab edit mobile
+  const lbl=document.getElementById('bs-wl-edit-label');
+  if(lbl) lbl.textContent=`${wtName[wt]||wt} — ${floor==='MAI'?'Mái':floor}`;
+}
+
+function closeWlForm(){
+  document.getElementById('desktop-wl-form').style.display='none';
+  clearWlPhoto();
+}
+function onWlPhotoSelected(input){
+  const file=input.files[0];if(!file)return;
+  _wlPhotoFile=file;
+  document.getElementById('wl-photo-preview').src=URL.createObjectURL(file);
+  document.getElementById('wl-photo-preview-wrap').style.display='';
+  document.getElementById('wl-upload-area').style.display='none';
+}
+function clearWlPhoto(){
+  _wlPhotoFile=null;
+  const p=document.getElementById('wl-photo-preview');if(p)p.src='';
+  const pw=document.getElementById('wl-photo-preview-wrap');if(pw)pw.style.display='none';
+  const ua=document.getElementById('wl-upload-area');if(ua)ua.style.display='';
+  const inp=document.getElementById('wl-photo-input');if(inp)inp.value='';
+}
+
+async function saveWorkLog(){
+  if(!CUR||!authToken) return;
+  const rows=[['VillaCode','WorkType','Floor','Status','Date','FileId','PhotoTime']];
+  Object.entries(WL).forEach(([villa,wts])=>{
+    Object.entries(wts).forEach(([wt,fls])=>{
+      Object.entries(fls).forEach(([floor,v])=>{
+        rows.push([villa,wt,floor,v.status||'',v.date||'',v.fileId||'',v.photoTime||'']);
+      });
+    });
+  });
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/WorkLog!A1:G10000:clear`,{
+    method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}
+  }).catch(()=>{});
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/WorkLog!A1:G${rows.length}?valueInputOption=RAW`,{
+    method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},
+    body:JSON.stringify({values:rows})
+  });
+}
+
+async function submitWlUpdate(){
+  if(!_wlVilla||!_wlWt||!_wlFloor){toast('Thiếu thông tin công tác','err');return;}
+  if(!_wlPhotoFile){toast('Vui lòng chọn ảnh nghiệm thu','err');return;}
+  const dateVal=document.getElementById('wl-date').value;
+  if(!dateVal){toast('Chọn ngày hoàn thành','err');return;}
+  const[yr,mo,dy]=dateVal.split('-');
+  const dateStr=`${dy}/${mo}/${yr}`;
+  const saveBtn=document.querySelector('#desktop-wl-form button[onclick="submitWlUpdate()"]');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='Đang xử lý...';}
+  const prog=document.getElementById('wl-upload-prog');
+  const fill=document.getElementById('wl-upload-fill');
+  if(prog) prog.style.display='';
+  try{
+    const folderId=await driveGetVillaFolder(CUR.id,_wlVilla);
+    const blob=await compressImage(_wlPhotoFile);
+    if(fill) fill.style.width='30%';
+    const oldEntry=WL[_wlVilla]&&WL[_wlVilla][_wlWt]&&WL[_wlVilla][_wlWt][_wlFloor];
+    if(oldEntry&&oldEntry.fileId) await driveDeleteFile(oldEntry.fileId);
+    const fileId=await driveUploadPhoto(blob,`${_wlWt}_${_wlFloor}.jpg`,folderId,pct=>{if(fill)fill.style.width=pct+'%';});
+    await driveSetPublic(fileId);
+    const now=new Date();
+    const photoTime=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    if(!WL[_wlVilla]) WL[_wlVilla]={};
+    if(!WL[_wlVilla][_wlWt]) WL[_wlVilla][_wlWt]={};
+    WL[_wlVilla][_wlWt][_wlFloor]={status:'done',date:dateStr,fileId,photoTime};
+    // TT done → XT auto done
+    if(_wlWt==='TT'){
+      if(!WL[_wlVilla]['XT']) WL[_wlVilla]['XT']={};
+      if(!WL[_wlVilla]['XT'][_wlFloor]||WL[_wlVilla]['XT'][_wlFloor].status!=='done')
+        WL[_wlVilla]['XT'][_wlFloor]={status:'done',date:dateStr,fileId:'',photoTime:''};
+    }
+    await saveWorkLog();
+    const newMs=calcMilestoneFromWL(_wlVilla);
+    if(newMs){
+      await gapiWriteStatus(CUR.sheetId,_wlVilla,newMs,dateStr);
+      SD[_wlVilla]={ms:newMs,date:dateStr};
+    }
+    if(fill) fill.style.width='100%';
+    toast(`✓ ${_wlVilla} — ${_wlWt} ${_wlFloor} hoàn thành`);
+    closeWlForm();
+    renderDesktopWLTable(_wlVilla);
+    renderAll();updateProjSummary();
+  }catch(e){toast('Lỗi: '+e.message,'err');}
+  finally{
+    if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='✓ Lưu công tác';}
+    if(prog){prog.style.display='none';}
+    if(fill){fill.style.width='0%';}
+  }
+}
+
+// ════════════════════════════════════════
 // LOGO MANAGEMENT
 // ════════════════════════════════════════
 const LOGO_KEY = 'vela_logo_url';
@@ -2872,16 +3205,15 @@ function openBotSheet(id){
   const bsTabs = document.getElementById('bs-tabs');
 
   if(canEdit()){
-    viewerNote.style.display = 'none';
-    bsTabs.style.display = '';
-    // Populate milestone dropdown
-    const sel = document.getElementById('bs-ms-sel');
-    sel.innerHTML = MS.map(m=>`<option value="${m}">${m}</option>`).join('');
-    if(s.ms && msIdx>=0 && msIdx<MS.length-1) sel.selectedIndex = msIdx+1;
-    else if(msIdx>=0) sel.selectedIndex = msIdx;
-    // Set today date
-    const now = new Date();
-    document.getElementById('bs-date-inp').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    viewerNote.style.display='none';
+    bsTabs.style.display='';
+    // Populate floor dropdown
+    const now=new Date();
+    document.getElementById('bs-date-inp').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    // Reset wt sel về DS rồi update floors
+    const wtSel=document.getElementById('bs-wt-sel');
+    if(wtSel) wtSel.value='DS';
+    setTimeout(()=>updateBsMobFloors(),100);
   } else {
     viewerNote.style.display = '';
     bsTabs.style.display = 'none';
@@ -2889,8 +3221,9 @@ function openBotSheet(id){
 
   // Luôn bắt đầu ở tab Xem
   switchBsTab('view');
-  // Render timeline
+  // Render timeline + WorkLog table
   renderBsTimeline(id);
+  renderMobWLTable(id);
 
   document.getElementById('bs-overlay').classList.add('show');
   setTimeout(()=>document.getElementById('bottom-sheet').classList.add('show'),10);
@@ -2903,7 +3236,69 @@ function closeBotSheet(){
   setTimeout(()=>{mobSelId=null;mobRenderMap();},300);
 }
 
-async function submitMobProgress(){
+// Cập nhật dropdown tầng theo công tác đã chọn mobile
+function updateBsMobFloors(){
+  const wt=document.getElementById('bs-wt-sel').value;
+  const floors=getFloors(mobSelId);
+  const floorSel=document.getElementById('bs-floor-sel');
+  if(!floorSel) return;
+  // Mái chỉ có DS
+  const validFloors = wt==='XT'||wt==='TT' ? floors.filter(f=>f!=='MAI') : floors;
+  const unlocked = validFloors.filter(f=>isWLUnlocked(mobSelId,wt,f)||
+    (WL[mobSelId]&&WL[mobSelId][wt]&&WL[mobSelId][wt][f]&&WL[mobSelId][wt][f].status==='done'));
+  floorSel.innerHTML=unlocked.length
+    ? unlocked.map(f=>`<option value="${f}">${f==='MAI'?'Mái':f}</option>`).join('')
+    : validFloors.map(f=>`<option value="${f}">${f==='MAI'?'Mái':f}</option>`).join('');
+}
+
+async function submitMobWlProgress(){
+  if(!mobSelId||!CUR){toast('Chưa chọn căn','err');return;}
+  const wt=document.getElementById('bs-wt-sel').value;
+  const floor=document.getElementById('bs-floor-sel').value;
+  const dateVal=document.getElementById('bs-date-inp').value;
+  if(!wt||!floor||!dateVal){toast('Chọn đủ công tác, tầng và ngày','err');return;}
+  if(!_mobPhotoFile){toast('Vui lòng chọn ảnh','err');return;}
+  const[yr,mo,dy]=dateVal.split('-');
+  const dateStr=`${dy}/${mo}/${yr}`;
+  const btn=document.getElementById('bs-save-btn');
+  btn.disabled=true;btn.textContent='Đang xử lý...';
+  const prog=document.getElementById('bs-upload-prog');
+  const fill=document.getElementById('bs-upload-fill');
+  prog.style.display='';
+  try{
+    const folderId=await driveGetVillaFolder(CUR.id,mobSelId);
+    const blob=await compressImage(_mobPhotoFile);
+    fill.style.width='30%';
+    const oldEntry=WL[mobSelId]&&WL[mobSelId][wt]&&WL[mobSelId][wt][floor];
+    if(oldEntry&&oldEntry.fileId) await driveDeleteFile(oldEntry.fileId);
+    const fileId=await driveUploadPhoto(blob,`${wt}_${floor}.jpg`,folderId,pct=>{fill.style.width=pct+'%';});
+    await driveSetPublic(fileId);
+    const now=new Date();
+    const photoTime=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    if(!WL[mobSelId]) WL[mobSelId]={};
+    if(!WL[mobSelId][wt]) WL[mobSelId][wt]={};
+    WL[mobSelId][wt][floor]={status:'done',date:dateStr,fileId,photoTime};
+    if(wt==='TT'){
+      if(!WL[mobSelId]['XT']) WL[mobSelId]['XT']={};
+      if(!WL[mobSelId]['XT'][floor]||WL[mobSelId]['XT'][floor].status!=='done')
+        WL[mobSelId]['XT'][floor]={status:'done',date:dateStr,fileId:'',photoTime:''};
+    }
+    await saveWorkLog();
+    const newMs=calcMilestoneFromWL(mobSelId);
+    if(newMs){
+      await gapiWriteStatus(CUR.sheetId,mobSelId,newMs,dateStr);
+      SD[mobSelId]={ms:newMs,date:dateStr};
+    }
+    fill.style.width='100%';
+    toast(`✓ ${mobSelId} — ${wt} ${floor} hoàn thành`);
+    switchBsTab('view');
+    renderBsTimeline(mobSelId);
+    renderMobWLTable(mobSelId);
+    mobRenderMap();renderAll();updateProjSummary();
+    setTimeout(()=>loadProjectData(),2000);
+  }catch(e){toast('Lỗi: '+e.message,'err');}
+  finally{btn.disabled=false;btn.textContent='✓ Lưu công tác';prog.style.display='none';fill.style.width='0%';}
+}
   if(!mobSelId||!CUR){toast('Chưa chọn căn','err');return;}
   if(!authToken){toast('Cần đăng nhập','err');return;}
   const milestone=document.getElementById('bs-ms-sel').value;
