@@ -359,7 +359,9 @@ header{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;displ
 .ed-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);border-radius:16px;padding:4px 13px;font-size:9px;color:#fbbf24;font-weight:600;z-index:10;pointer-events:none;white-space:nowrap}
 .ed-sb{position:absolute;bottom:10px;left:10px;background:rgba(10,15,26,.9);border:1px solid #1e293b;border-radius:6px;padding:4px 10px;font-size:9px;color:#64748b;z-index:10;display:flex;gap:8px;align-items:center}
 .ed-zc{position:absolute;bottom:10px;right:10px;display:flex;flex-direction:column;gap:3px;z-index:10}
-.ed-panel{width:280px;flex-shrink:0;background:#111827;border-left:1px solid #1e293b;display:flex;flex-direction:column;overflow:hidden}
+.ed-panel{width:380px;min-width:260px;max-width:60vw;flex-shrink:0;background:#111827;border-left:1px solid #1e293b;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.ed-panel-resize{position:absolute;left:0;top:0;bottom:0;width:5px;cursor:col-resize;background:transparent;z-index:20;transition:background .15s}
+.ed-panel-resize:hover,.ed-panel-resize.dragging{background:var(--gold)}
 .ep-sec{padding:8px 11px;border-bottom:1px solid #1e293b;flex-shrink:0}
 .ep-title{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#475569;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
 .ep-badge{background:rgba(59,130,246,.2);color:#60a5fa;font-size:8px;padding:1px 5px;border-radius:6px;font-weight:700}
@@ -972,7 +974,8 @@ option{background:#111827}
         <div class="ed-sb"><div class="dot" style="background:#10b981"></div><span id="ed-zoom" style="color:#475569">100%</span><span id="ed-xy" style="color:#60a5fa;font-size:8px">x:0 y:0</span><span id="ed-mode" style="color:#f59e0b">VẼ</span></div>
         <div class="ed-zc"><div class="zb" onclick="edZoom(1.2)">+</div><div class="zb" onclick="edZoom(0.83)">−</div><div class="zb" onclick="edFitZoom()" style="font-size:8px">FIT</div></div>
       </div>
-      <div class="ed-panel">
+      <div class="ed-panel" id="ed-panel">
+        <div class="ed-panel-resize" id="ed-panel-resize" title="Kéo để thay đổi độ rộng"></div>
         <div class="ep-sec">
           <div class="ep-title">Thông tin căn <span class="ep-badge" id="ep-cnt">0</span><span class="ep-edit-badge" id="ep-edit-badge" style="display:none">✏️ ĐANG SỬA</span></div>
           <div class="efl">Mã căn (ID)</div><input class="efi" id="ep-id" placeholder="SD10-5, DV18-1 ...">
@@ -3138,39 +3141,39 @@ async function submitWlUpdate(){
 }
 
 // ════════════════════════════════════════
-// RESIZABLE PANEL
+// RESIZABLE PANELS
 // ════════════════════════════════════════
-(function(){
-  const handle = document.getElementById('panel-resize-handle');
-  const panel  = document.getElementById('right-panel');
+function makeResizable(handleId, panelId, storageKey){
+  const handle=document.getElementById(handleId);
+  const panel=document.getElementById(panelId);
   if(!handle||!panel) return;
-  let startX=0, startW=0, dragging=false;
-  handle.addEventListener('mousedown', e=>{
-    dragging=true; startX=e.clientX; startW=panel.offsetWidth;
+  let startX=0,startW=0,dragging=false;
+  handle.addEventListener('mousedown',e=>{
+    dragging=true;startX=e.clientX;startW=panel.offsetWidth;
     handle.classList.add('dragging');
     document.body.style.cursor='col-resize';
     document.body.style.userSelect='none';
     e.preventDefault();
   });
-  document.addEventListener('mousemove', e=>{
-    if(!dragging) return;
-    const diff = startX - e.clientX; // kéo sang trái = rộng ra
-    const newW = Math.min(Math.max(startW+diff, 280), window.innerWidth*0.6);
-    panel.style.width = newW+'px';
+  document.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const diff=startX-e.clientX;
+    const newW=Math.min(Math.max(startW+diff,260),window.innerWidth*0.65);
+    panel.style.width=newW+'px';
   });
-  document.addEventListener('mouseup', ()=>{
-    if(!dragging) return;
+  document.addEventListener('mouseup',()=>{
+    if(!dragging)return;
     dragging=false;
     handle.classList.remove('dragging');
     document.body.style.cursor='';
     document.body.style.userSelect='';
-    // Lưu vào localStorage
-    localStorage.setItem('vela_panel_width', panel.offsetWidth);
+    localStorage.setItem(storageKey,panel.offsetWidth);
   });
-  // Khôi phục width đã lưu
-  const saved = localStorage.getItem('vela_panel_width');
-  if(saved) panel.style.width = Math.min(Math.max(parseInt(saved),280),window.innerWidth*0.6)+'px';
-})();
+  const saved=localStorage.getItem(storageKey);
+  if(saved)panel.style.width=Math.min(Math.max(parseInt(saved),260),window.innerWidth*0.65)+'px';
+}
+makeResizable('panel-resize-handle','right-panel','vela_panel_width');
+makeResizable('ed-panel-resize','ed-panel','vela_ed_panel_width');
 const LOGO_KEY = 'vela_logo_url';
 
 function applyLogo(url) {
