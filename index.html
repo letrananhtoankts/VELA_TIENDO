@@ -112,7 +112,10 @@ header{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;displ
 .tab-content.active{display:flex}
 
 /* ── MAP TAB ── */
-.proj-bar{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;flex-shrink:0}
+.proj-bar{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.proj-bar-row{display:grid;gap:6px}
+.proj-bar-row.row1{grid-template-columns:1fr 1fr 1fr}
+.proj-bar-row.row2{grid-template-columns:1fr 1fr auto}
 .proj-item{background:#1e293b;border-radius:6px;padding:5px 10px}
 .proj-label{font-size:8px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;font-weight:600}
 .proj-nums{display:flex;align-items:baseline;gap:4px;margin-bottom:3px}
@@ -272,7 +275,7 @@ header{background:#111827;border-bottom:1px solid #1e293b;padding:5px 14px;displ
 .map-loading{position:absolute;inset:0;background:rgba(15,23,42,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;font-size:12px;color:#94a3b8}
 
 /* RIGHT PANEL */
-.panel{width:320px;flex-shrink:0;background:#f8fafc;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.panel{width:420px;flex-shrink:0;background:#f8fafc;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .pe{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 18px;text-align:center;color:var(--muted)}
 .peico{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f0ebe0,#e5ddd0);display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:22px}
 .pe h3{font-size:12px;font-weight:500;margin-bottom:3px;color:var(--text)}
@@ -769,39 +772,45 @@ option{background:#111827}
   <!-- TAB: MAP -->
   <div class="tab-content active" id="tab-map">
     <div class="proj-bar">
-      <div class="proj-item">
-        <div class="proj-label">Bê tông</div>
-        <div class="proj-nums"><span class="proj-done" id="proj-c-done">—</span><span class="proj-total" id="proj-c-total">/ —</span><span class="proj-unit">m³</span><span class="proj-pct-badge" id="proj-c-pct" style="background:#1e3a5f;color:#60a5fa">—</span></div>
-        <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-c-bar" style="width:0%;background:#60a5fa"></div></div>
-      </div>
-      <div class="proj-item">
-        <div class="proj-label">Cốt thép</div>
-        <div class="proj-nums"><span class="proj-done" id="proj-r-done">—</span><span class="proj-total" id="proj-r-total">/ —</span><span class="proj-unit">tấn</span><span class="proj-pct-badge" id="proj-r-pct" style="background:#14532d;color:#34d399">—</span></div>
-        <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-r-bar" style="width:0%;background:#34d399"></div></div>
-      </div>
-      <div class="proj-item">
-        <div class="proj-label">Coppha</div>
-        <div class="proj-nums"><span class="proj-done" id="proj-f-done">—</span><span class="proj-total" id="proj-f-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-f-pct" style="background:#451a03;color:#fbbf24">—</span></div>
-        <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-f-bar" style="width:0%;background:#fbbf24"></div></div>
-      </div>
-      <div class="proj-item">
-        <div class="proj-label">Xây tường</div>
-        <div class="proj-nums"><span class="proj-done" id="proj-x-done">—</span><span class="proj-total" id="proj-x-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-x-pct" style="background:#4a1942;color:#f472b6">—</span></div>
-        <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-x-bar" style="width:0%;background:#f472b6"></div></div>
-      </div>
-      <div class="proj-item">
-        <div class="proj-label">Tô tường</div>
-        <div class="proj-nums"><span class="proj-done" id="proj-t-done">—</span><span class="proj-total" id="proj-t-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-t-pct" style="background:#2e1a5e;color:#a78bfa">—</span></div>
-        <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-t-bar" style="width:0%;background:#a78bfa"></div></div>
-      </div>
-      <div class="proj-item" style="background:transparent;display:flex;align-items:center;justify-content:center">
-        <div style="text-align:center">
-          <div style="font-size:8px;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Đang TC</div>
-          <div style="font-size:22px;font-weight:700;color:var(--gold)" id="proj-active">—</div>
-          <div style="font-size:10px;color:#475569">/ <span id="proj-total-units">—</span> căn</div>
+      <!-- Hàng 1: BT, CT, CF -->
+      <div class="proj-bar-row row1">
+        <div class="proj-item">
+          <div class="proj-label">Bê tông</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-c-done">—</span><span class="proj-total" id="proj-c-total">/ —</span><span class="proj-unit">m³</span><span class="proj-pct-badge" id="proj-c-pct" style="background:#1e3a5f;color:#60a5fa">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-c-bar" style="width:0%;background:#60a5fa"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Cốt thép</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-r-done">—</span><span class="proj-total" id="proj-r-total">/ —</span><span class="proj-unit">tấn</span><span class="proj-pct-badge" id="proj-r-pct" style="background:#14532d;color:#34d399">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-r-bar" style="width:0%;background:#34d399"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Coppha</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-f-done">—</span><span class="proj-total" id="proj-f-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-f-pct" style="background:#451a03;color:#fbbf24">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-f-bar" style="width:0%;background:#fbbf24"></div></div>
         </div>
       </div>
-    </div>
+      <!-- Hàng 2: XT, TT + Đang TC -->
+      <div class="proj-bar-row row2">
+        <div class="proj-item">
+          <div class="proj-label">Xây tường</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-x-done">—</span><span class="proj-total" id="proj-x-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-x-pct" style="background:#4a1942;color:#f472b6">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-x-bar" style="width:0%;background:#f472b6"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Tô tường</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-t-done">—</span><span class="proj-total" id="proj-t-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-t-pct" style="background:#2e1a5e;color:#a78bfa">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-t-bar" style="width:0%;background:#a78bfa"></div></div>
+        </div>
+        <div class="proj-item" style="background:transparent;display:flex;align-items:center;justify-content:center;padding:5px 16px">
+          <div style="text-align:center">
+            <div style="font-size:8px;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Đang TC</div>
+            <div style="font-size:22px;font-weight:700;color:var(--gold)" id="proj-active">—</div>
+            <div style="font-size:10px;color:#475569">/ <span id="proj-total-units">—</span> căn</div>
+          </div>
+        </div>
+      </div><!-- end row2 -->
+    </div><!-- end proj-bar -->
     <div class="ctrl-hint" id="ctrl-hint">
       <span>💡 <b>Click</b>=1 căn &nbsp;|&nbsp; <b>Ctrl+Click/Kéo</b>=cụm</span>
       <span id="sel-info" style="display:none"><span class="sel-count" id="sel-count">0</span> căn đã chọn <button class="clear-btn" onclick="clearSel()">✕</button></span>
@@ -970,7 +979,7 @@ option{background:#111827}
           <!-- KL Table -->
           <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán cộng dồn theo mốc</div>
           <div id="ep-kl-table" style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px;width:100%">
-            <div style="display:grid;grid-template-columns:1.4fr 52px 52px 52px 52px 52px;gap:0;font-size:8px;font-weight:700;color:#475569;text-transform:uppercase;padding:5px 6px;border-bottom:1px solid #1e293b;background:#111827">
+            <div style="display:grid;grid-template-columns:1.4fr 56px 56px 56px 56px 56px;gap:0;font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
               <span>Mốc</span>
               <span style="text-align:center;color:#60a5fa">BT m³</span>
               <span style="text-align:center;color:#34d399">CT tấn</span>
@@ -1090,6 +1099,7 @@ let MS = ["Kết cấu Móng","Dầm sàn 1F","Cột 2F","Dầm sàn 2F","Cột 
 let MC = ["#34d399","#059669","#60a5fa","#2563eb","#fbbf24","#d97706","#a78bfa"];
 let MS_CODES = ["MONG","1F","COT2F","2F","COT3F","3F","MAI"];
 let MS_APPLY = ["ALL","ALL","ALL","ALL","BTV","BTV","ALL"];
+let MS_WTYPE = ["KC","KC","KC","KC","KC","KC","KC"]; // WorkType mỗi milestone
 let UNIT_TYPES = [{code:'BTV',name:'Biệt thự vườn'},{code:'DTD',name:'Dinh thự đồi'},{code:'DTG',name:'Dinh thự đồi góc'}];
 
 // ════════════════════════════════════════
@@ -1380,17 +1390,18 @@ async function loadProjectData(){
       gapi(CUR.sheetId,'KLTongHop!A:R'),
       gapi(CUR.sheetId,'MapConfig!A:B'),
       gapi(CUR.sheetId,'VillaInfo!A:E'),
-      gapi(CUR.sheetId,'MilestoneConfig!A:E'),
+      gapi(CUR.sheetId,'MilestoneConfig!A:F'),
       gapi(CUR.sheetId,'UnitTypeConfig!A:D'),
     ]);
     // Load MilestoneConfig → MS, MC, MS_CODES, MS_APPLY
     const msRows=(rMS.values||[]).slice(1).filter(r=>r[0]!=='');
     if(msRows.length){
       msRows.sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
-      MS=msRows.map(r=>r[2]||'');           // MilestoneName (hiển thị)
-      MC=msRows.map(r=>r[3]||'#94a3b8');   // Color
-      MS_CODES=msRows.map(r=>r[1]||'');    // MilestoneCode (ngắn)
-      MS_APPLY=msRows.map(r=>r[4]||'ALL'); // ApplyTo
+      MS=msRows.map(r=>r[2]||'');
+      MC=msRows.map(r=>r[3]||'#94a3b8');
+      MS_CODES=msRows.map(r=>r[1]||'');
+      MS_APPLY=msRows.map(r=>r[4]||'ALL');
+      MS_WTYPE=msRows.map(r=>(r[5]||'KC').toUpperCase()); // Cột F: KC / XT / TT
     }
     // Load UnitTypeConfig → UNIT_TYPES
     const utRows=(rUT.values||[]).slice(1).filter(r=>r[0]!=='');
@@ -2129,22 +2140,27 @@ function edResetForProject(){
 
 function edBuildKLTable(){
   const container=document.getElementById('ep-kl-rows');
-  if(!container)return;
+  if(!container) return;
   container.innerHTML='';
-  const inpStyle=(color)=>`border:none;border-left:1px solid #1e293b;background:#0f172a;color:${color};font-size:9px;padding:4px;width:100%;outline:none;text-align:center`;
+  const active=(color)=>`border:none;border-left:1px solid #1e293b;background:#0f172a;color:${color};font-size:11px;padding:6px 4px;width:100%;outline:none;text-align:center;font-family:inherit`;
+  const locked=`border:none;border-left:1px solid #111827;background:#090e18;color:#1e293b;font-size:11px;padding:6px 4px;width:100%;outline:none;text-align:center;cursor:not-allowed`;
   MS_CODES.forEach((code,i)=>{
     const name=MS[i]||code;
+    const wtype=(MS_WTYPE[i]||'KC').toUpperCase();
+    const isKC=wtype==='KC';
+    const isXT=wtype==='XT';
+    const isTT=wtype==='TT';
     const row=document.createElement('div');
     row.className='ep-kl-row';
     row.setAttribute('data-code',code);
-    row.style.cssText='display:grid;grid-template-columns:1.4fr 52px 52px 52px 52px 52px;gap:0;border-bottom:1px solid #111827;align-items:center';
+    row.style.cssText='display:grid;grid-template-columns:1.4fr 56px 56px 56px 56px 56px;gap:0;border-bottom:1px solid #111827;align-items:center';
     row.innerHTML=`
-      <div style="padding:4px 6px;font-size:9px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
-      <input class="ep-kl-bt" type="number" placeholder="0" step="0.01" style="${inpStyle('#60a5fa')}">
-      <input class="ep-kl-ct" type="number" placeholder="0" step="0.001" style="${inpStyle('#34d399')}">
-      <input class="ep-kl-cf" type="number" placeholder="0" step="0.1" style="${inpStyle('#fbbf24')}">
-      <input class="ep-kl-xt" type="number" placeholder="0" step="0.1" style="${inpStyle('#f472b6')}">
-      <input class="ep-kl-tt" type="number" placeholder="0" step="0.1" style="${inpStyle('#a78bfa')}">
+      <div style="padding:5px 8px;font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
+      <input class="ep-kl-bt" type="number" placeholder="0" step="0.01" ${isKC?'':'disabled'} style="${isKC?active('#60a5fa'):locked}">
+      <input class="ep-kl-ct" type="number" placeholder="0" step="0.001" ${isKC?'':'disabled'} style="${isKC?active('#34d399'):locked}">
+      <input class="ep-kl-cf" type="number" placeholder="0" step="0.1" ${isKC?'':'disabled'} style="${isKC?active('#fbbf24'):locked}">
+      <input class="ep-kl-xt" type="number" placeholder="0" step="0.1" ${isXT?'':'disabled'} style="${isXT?active('#f472b6'):locked}">
+      <input class="ep-kl-tt" type="number" placeholder="0" step="0.1" ${isTT?'':'disabled'} style="${isTT?active('#a78bfa'):locked}">
     `;
     container.appendChild(row);
   });
