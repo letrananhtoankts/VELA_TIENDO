@@ -3299,44 +3299,6 @@ async function submitMobWlProgress(){
   }catch(e){toast('Lỗi: '+e.message,'err');}
   finally{btn.disabled=false;btn.textContent='✓ Lưu công tác';prog.style.display='none';fill.style.width='0%';}
 }
-  if(!mobSelId||!CUR){toast('Chưa chọn căn','err');return;}
-  if(!authToken){toast('Cần đăng nhập','err');return;}
-  const milestone=document.getElementById('bs-ms-sel').value;
-  const dateVal=document.getElementById('bs-date-inp').value;
-  if(!milestone||!dateVal){toast('Chọn mốc và ngày','err');return;}
-  if(!_mobPhotoFile){toast('Vui lòng chọn ảnh nghiệm thu','err');return;}
-  const[yr,mo,dy]=dateVal.split('-');
-  const dateStr=`${dy}/${mo}/${yr}`;
-  const btn=document.getElementById('bs-save-btn');
-  btn.disabled=true;btn.textContent='Đang xử lý...';
-  const prog=document.getElementById('bs-upload-prog');
-  const fill=document.getElementById('bs-upload-fill');
-  prog.style.display='';
-  try{
-    const msIdx=MS.indexOf(milestone);
-    const msCode=MS_CODES[msIdx]||milestone;
-    // Upload ảnh Drive
-    await uploadEvidencePhoto(mobSelId, msCode, _mobPhotoFile, pct=>{fill.style.width=pct+'%';});
-    // Ghi MasterStatus
-    await gapiWriteStatus(CUR.sheetId,mobSelId,milestone,dateStr);
-    // Cập nhật local state ngay
-    SD[mobSelId]={ms:milestone,date:dateStr};
-    // Quay về tab Xem và refresh timeline
-    switchBsTab('view');
-    renderBsTimeline(mobSelId);
-    toast(`✓ ${mobSelId} → ${milestone} + ảnh`);
-    mobRenderMap();
-    renderMobileOverview();
-    renderAll();
-    updateProjSummary();
-    setTimeout(()=>loadProjectData(),1500);
-  }catch(e){toast('Lỗi: '+e.message,'err');}
-  finally{
-    btn.disabled=false;btn.textContent='✓ Lưu tiến độ';
-    prog.style.display='none';fill.style.width='0%';
-  }
-}
-
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
