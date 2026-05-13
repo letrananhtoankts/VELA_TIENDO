@@ -992,8 +992,6 @@ option{background:#111827}
         <div class="ep-sec">
           <div class="ep-title">Thông tin căn <span class="ep-badge" id="ep-cnt">0</span><span class="ep-edit-badge" id="ep-edit-badge" style="display:none">✏️ ĐANG SỬA</span></div>
           <div class="efl">Mã căn (ID)</div><input class="efi" id="ep-id" placeholder="SD10-5, DV18-1 ...">
-          <div class="efl">Loại căn</div>
-          <select class="efi" id="ep-type"><option value="Biệt thự vườn">Biệt thự vườn</option><option value="Dinh thự đồi">Dinh thự đồi</option><option value="Dinh thự đồi góc">Dinh thự đồi góc</option></select>
           <div style="display:flex;gap:4px"><div style="flex:1"><div class="efl">Diện tích</div><input class="efi" id="ep-area" placeholder="160 m²"></div><div style="flex:1"><div class="efl">Image URL</div><input class="efi" id="ep-imgurl" placeholder="https://..."></div></div>
           <!-- KL Table -->
           <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán cộng dồn theo mốc</div>
@@ -1423,7 +1421,7 @@ async function loadProjectData(){
       MC=msRows.map(r=>r[3]||'#94a3b8');
       MS_CODES=msRows.map(r=>r[1]||'');
       MS_APPLY=msRows.map(r=>r[4]||'ALL');
-      MS_WTYPE=msRows.map(r=>(r[5]||'KC').toUpperCase()); // Cột F: KC / XT / TT
+      MS_WTYPE=msRows.map(r=>(r[5]||'KC').toUpperCase()); // Cột F: KC / XT / TT / CT / MEP / DD hoặc nhiều type cách nhau dấu phẩy
     }
     // Load UnitTypeConfig → UNIT_TYPES
     const utRows=(rUT.values||[]).slice(1).filter(r=>r[0]!=='');
@@ -2176,13 +2174,14 @@ function edBuildKLTable(){
   MS_CODES.forEach((code,i)=>{
     const name=MS[i]||code;
     const wtype=(MS_WTYPE[i]||'KC').toUpperCase();
-    const isKC=wtype==='KC';
-    const isXT=wtype==='XT';
-    const isTT=wtype==='TT';
-    const isCT=wtype==='CT';
-    const isMEP=wtype==='MEP';
-    const isDD=wtype==='DD';
-    const isHT=wtype==='HT';
+    const wtypes=wtype.split(',').map(s=>s.trim()); // hỗ trợ multi-type VD: "HT,KC"
+    const isKC=wtypes.includes('KC');
+    const isXT=wtypes.includes('XT');
+    const isTT=wtypes.includes('TT');
+    const isCT=wtypes.includes('CT');
+    const isMEP=wtypes.includes('MEP');
+    const isDD=wtypes.includes('DD');
+    const isHT=wtypes.includes('HT');
     const row=document.createElement('div');
     row.className='ep-kl-row';
     row.setAttribute('data-code',code);
@@ -2267,7 +2266,7 @@ function edSaveUnit(){
   const isEdit=!!edEditingId;
   const finalPts = edPts.length>=3 ? edPts : (isEdit&&edUnits[edEditingId]?edUnits[edEditingId].pts:[]);
   if(finalPts.length<3){toast('Cần ≥3 điểm để xác định polygon!','err');return;}
-  const type=document.getElementById('ep-type').value;
+  const type=edUnits[ids[0]]?.type||UNIT_TYPES[0]?.code||'BTV';
   const area=document.getElementById('ep-area').value;
   const imgurl=document.getElementById('ep-imgurl').value;
   // Collect KL data
@@ -2363,9 +2362,6 @@ function edEditUnit(id,e){
   document.getElementById('ep-cancel-draw').style.display='none';
   // Điền thông tin căn lên form
   document.getElementById('ep-id').value=id;
-  // Loại căn
-  const typeEl=document.getElementById('ep-type');
-  if(typeEl){const opts=Array.from(typeEl.options);const match=opts.find(o=>o.value===u.type||o.text===u.type||o.value===u.type?.split('|')[0]?.trim());if(match)typeEl.value=match.value;}
   // Diện tích và image URL
   document.getElementById('ep-area').value=(u.area||'').replace(/\s*m²/,'');
   document.getElementById('ep-imgurl').value=u.imgurl||'';
