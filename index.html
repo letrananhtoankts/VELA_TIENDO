@@ -744,6 +744,7 @@ option{background:#111827}
               <option value="TT">Tô tường</option>
               <option value="CT">Chống thấm</option>
               <option value="MEP">MEP</option>
+              <option value="DD">Đào đất</option>
             </select>
             <div class="bs-label">Tầng</div>
             <select class="bs-ms-sel" id="bs-floor-sel"></select>
@@ -997,7 +998,7 @@ option{background:#111827}
           <!-- KL Table -->
           <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán cộng dồn theo mốc</div>
           <div id="ep-kl-table" style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px;width:100%">
-            <div style="display:grid;grid-template-columns:1.4fr 50px 50px 50px 50px 50px 56px 50px;gap:0;font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
+            <div style="display:grid;grid-template-columns:1.3fr 46px 46px 46px 46px 46px 50px 44px 44px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
               <span>Mốc</span>
               <span style="text-align:center;color:#60a5fa">BT m³</span>
               <span style="text-align:center;color:#34d399">CT kg</span>
@@ -1006,6 +1007,7 @@ option{background:#111827}
               <span style="text-align:center;color:#a78bfa">TT m²</span>
               <span style="text-align:center;color:#38bdf8">C.Thấm</span>
               <span style="text-align:center;color:#fb923c">MEP</span>
+              <span style="text-align:center;color:#94a3b8">Đào</span>
             </div>
             <div id="ep-kl-rows" style="max-height:200px;overflow-y:auto"></div>
           </div>
@@ -2177,22 +2179,21 @@ function edBuildKLTable(){
     const isKC=wtype==='KC';
     const isXT=wtype==='XT';
     const isTT=wtype==='TT';
-    const isCT=wtype==='CT';  // Chống thấm
+    const isCT=wtype==='CT';
     const isMEP=wtype==='MEP';
-    const isHT=wtype==='HT';  // fallback nếu dùng HT chung
-    const row=document.createElement('div');
-    row.className='ep-kl-row';
-    row.setAttribute('data-code',code);
-    row.style.cssText='display:grid;grid-template-columns:1.4fr 50px 50px 50px 50px 50px 56px 50px;gap:0;border-bottom:1px solid #111827;align-items:center';
+    const isDD=wtype==='DD';
+    const isHT=wtype==='HT';
+    row.style.cssText='display:grid;grid-template-columns:1.3fr 46px 46px 46px 46px 46px 50px 44px 44px;gap:0;border-bottom:1px solid #111827;align-items:center';
     row.innerHTML=`
-      <div style="padding:5px 8px;font-size:11px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
-      <input class="ep-kl-bt"   type="number" placeholder="0" step="0.01"  ${isKC?'':'disabled'} style="${isKC?active('#60a5fa'):locked}">
-      <input class="ep-kl-ct"   type="number" placeholder="0" step="0.001" ${isKC?'':'disabled'} style="${isKC?active('#34d399'):locked}">
-      <input class="ep-kl-cf"   type="number" placeholder="0" step="0.1"   ${isKC?'':'disabled'} style="${isKC?active('#fbbf24'):locked}">
-      <input class="ep-kl-xt"   type="number" placeholder="0" step="0.1"   ${isXT?'':'disabled'} style="${isXT?active('#f472b6'):locked}">
-      <input class="ep-kl-tt"   type="number" placeholder="0" step="0.1"   ${isTT?'':'disabled'} style="${isTT?active('#a78bfa'):locked}">
-      <input class="ep-kl-ctham" type="number" placeholder="0" step="1"   ${(isCT||isHT)?'':'disabled'} style="${(isCT||isHT)?active('#38bdf8'):locked}">
-      <input class="ep-kl-mep"  type="number" placeholder="0" step="1"    ${(isMEP||isHT)?'':'disabled'} style="${(isMEP||isHT)?active('#fb923c'):locked}">
+      <div style="padding:5px 8px;font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
+      <input class="ep-kl-bt"    type="number" placeholder="0" step="0.01"  ${isKC?'':'disabled'} style="${isKC?active('#60a5fa'):locked}">
+      <input class="ep-kl-ct"    type="number" placeholder="0" step="0.001" ${isKC?'':'disabled'} style="${isKC?active('#34d399'):locked}">
+      <input class="ep-kl-cf"    type="number" placeholder="0" step="0.1"   ${isKC?'':'disabled'} style="${isKC?active('#fbbf24'):locked}">
+      <input class="ep-kl-xt"    type="number" placeholder="0" step="0.1"   ${isXT?'':'disabled'} style="${isXT?active('#f472b6'):locked}">
+      <input class="ep-kl-tt"    type="number" placeholder="0" step="0.1"   ${isTT?'':'disabled'} style="${isTT?active('#a78bfa'):locked}">
+      <input class="ep-kl-ctham" type="number" placeholder="0" step="1"     ${(isCT||isHT)?'':'disabled'} style="${(isCT||isHT)?active('#38bdf8'):locked}">
+      <input class="ep-kl-mep"   type="number" placeholder="0" step="1"     ${(isMEP||isHT)?'':'disabled'} style="${(isMEP||isHT)?active('#fb923c'):locked}">
+      <input class="ep-kl-dd"    type="number" placeholder="0" step="1"     ${isDD?'':'disabled'} style="${isDD?active('#94a3b8'):locked}">
     `;
     container.appendChild(row);
   });
@@ -2277,9 +2278,11 @@ function edSaveUnit(){
     const tt=parseFloat(row.querySelector('.ep-kl-tt').value)||0;
     const ctInp=row.querySelector('.ep-kl-ctham');
     const mepInp=row.querySelector('.ep-kl-mep');
+    const ddInp=row.querySelector('.ep-kl-dd');
     const chongtham=ctInp?parseFloat(ctInp.value)||0:0;
     const mep=mepInp?parseFloat(mepInp.value)||0:0;
-    klData.push({code,bt,ct,cf,xt,tt,chongtham,mep});
+    const daodат=ddInp?parseFloat(ddInp.value)||0:0;
+    klData.push({code,bt,ct,cf,xt,tt,chongtham,mep,daodат});
   });
   // Lấy màu: nếu edit giữ màu cũ, nếu mới tạo màu mới
   let color;
@@ -2376,6 +2379,7 @@ function edEditUnit(id,e){
         const ttInp=row.querySelector('.ep-kl-tt');if(ttInp)ttInp.value=kl.tt||'';
         const cthamInp=row.querySelector('.ep-kl-ctham');if(cthamInp)cthamInp.value=kl.chongtham||'';
         const mepInp=row.querySelector('.ep-kl-mep');if(mepInp)mepInp.value=kl.mep||'';
+        const ddInp=row.querySelector('.ep-kl-dd');if(ddInp)ddInp.value=kl.daodат||'';
       }
     });
   }
@@ -2468,7 +2472,7 @@ async function edWriteToSheet(){
 
     // ── KLDinhMuc: đọc Sheet → giữ tất cả căn khác nguyên vẹn → chỉ ghi đè căn trong idSet nếu có klData thực ──
     try{
-      const existKL=await gapi(CUR.sheetId,'KLDinhMuc!A:I');
+      const existKL=await gapi(CUR.sheetId,'KLDinhMuc!A:J');
       const klVals=existKL.values||[];
       const keptKL=klVals.filter((row,i)=>i===0||!idSet.has(row[0]));
       const newKLRows=[];
@@ -2476,8 +2480,8 @@ async function edWriteToSheet(){
         const u=edUnits[id];
         if(u.klData&&u.klData.length){
           u.klData.forEach(kl=>{
-            if(kl.bt||kl.ct||kl.cf||kl.xt||kl.tt||kl.chongtham||kl.mep)
-              newKLRows.push([id,kl.code,kl.bt,kl.ct,kl.cf,kl.xt||0,kl.tt||0,kl.chongtham||0,kl.mep||0]);
+            if(kl.bt||kl.ct||kl.cf||kl.xt||kl.tt||kl.chongtham||kl.mep||kl.daodат)
+              newKLRows.push([id,kl.code,kl.bt,kl.ct,kl.cf,kl.xt||0,kl.tt||0,kl.chongtham||0,kl.mep||0,kl.daodат||0]);
           });
         }
       });
@@ -2485,11 +2489,11 @@ async function edWriteToSheet(){
       const idsWithoutNewKL=ids.filter(id=>!idsWithNewKL.has(id));
       const keepOldKL=klVals.filter((row,i)=>i>0&&idsWithoutNewKL.includes(row[0]));
       const newKL=[...keptKL,...keepOldKL,...newKLRows];
-      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:I10000:clear`,{
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:J10000:clear`,{
         method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}
       });
       if(newKL.length){
-        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:I${newKL.length}?valueInputOption=USER_ENTERED`,{
+        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:J${newKL.length}?valueInputOption=USER_ENTERED`,{
           method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},
           body:JSON.stringify({values:newKL})
         }).then(r=>r.json());
@@ -2989,8 +2993,8 @@ function isWLUnlocked(villaId,wt,floor){
     if(floor==='MAI') return false;
     return done('COT',floor);
   }
-  if(wt==='CT'||wt==='MEP'){
-    // Chống thấm và MEP: không ràng buộc gì — luôn mở
+  if(wt==='CT'||wt==='MEP'||wt==='DD'){
+    // Chống thấm, MEP, Đào đất: không ràng buộc — luôn mở
     return floor==='FULL';
   }
   if(wt==='TT'){
@@ -3036,7 +3040,7 @@ function renderDesktopWLTable(villaId){
   });
   html+=`</tbody></table>`;
   // Thêm 2 hàng CT và MEP riêng (không theo tầng)
-  const htRows=[{wt:'CT',label:'Chống thấm',color:'#38bdf8'},{wt:'MEP',label:'MEP',color:'#fb923c'}];
+  const htRows=[{wt:'DD',label:'Đào đất',color:'#94a3b8'},{wt:'CT',label:'Chống thấm',color:'#38bdf8'},{wt:'MEP',label:'MEP',color:'#fb923c'}];
   html+=`<table class="wl-table" style="margin-top:6px"><thead><tr><th colspan="2">Hạng mục hoàn thiện</th><th>Trạng thái</th>${canEdit()?'<th></th>':''}</tr></thead><tbody>`;
   htRows.forEach(({wt,label,color})=>{
     const entry=wl[wt]&&wl[wt]['FULL'];
@@ -3092,7 +3096,7 @@ function renderMobWLTable(villaId){
   });
   html+=`</tbody></table>`;
   // CT và MEP
-  const htRows2=[{wt:'CT',label:'Chống thấm',color:'#38bdf8'},{wt:'MEP',label:'MEP',color:'#fb923c'}];
+  const htRows2=[{wt:'DD',label:'Đào đất',color:'#94a3b8'},{wt:'CT',label:'Chống thấm',color:'#38bdf8'},{wt:'MEP',label:'MEP',color:'#fb923c'}];
   html+=`<div style="margin-top:8px">`;
   htRows2.forEach(({wt,label,color})=>{
     const entry=wl[wt]&&wl[wt]['FULL'];
@@ -3412,8 +3416,8 @@ function updateBsMobFloors(){
   const floorSel=document.getElementById('bs-floor-sel');
   if(!floorSel) return;
   // CT và MEP không theo tầng
-  if(wt==='CT'||wt==='MEP'){
-    floorSel.innerHTML=`<option value="FULL">Toàn căn</option>`;
+  if(wt==='CT'||wt==='MEP'||wt==='DD'){
+    floorSel.innerHTML=`<option value="FULL">${wt==='DD'?'Toàn căn (đào đất)':'Toàn căn'}</option>`;
     return;
   }
   const floors=getFloors(mobSelId);
