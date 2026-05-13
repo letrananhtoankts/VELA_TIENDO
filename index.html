@@ -2183,6 +2183,9 @@ function edBuildKLTable(){
     const isMEP=wtype==='MEP';
     const isDD=wtype==='DD';
     const isHT=wtype==='HT';
+    const row=document.createElement('div');
+    row.className='ep-kl-row';
+    row.setAttribute('data-code',code);
     row.style.cssText='display:grid;grid-template-columns:1.3fr 46px 46px 46px 46px 46px 50px 44px 44px;gap:0;border-bottom:1px solid #111827;align-items:center';
     row.innerHTML=`
       <div style="padding:5px 8px;font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
