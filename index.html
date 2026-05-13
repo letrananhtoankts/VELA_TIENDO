@@ -998,8 +998,9 @@ option{background:#111827}
           <!-- KL Table -->
           <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán cộng dồn theo mốc</div>
           <div id="ep-kl-table" style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px;width:100%">
-            <div style="display:grid;grid-template-columns:1.3fr 46px 46px 46px 46px 46px 50px 44px 44px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
+            <div style="display:grid;grid-template-columns:1.3fr 50px 46px 46px 46px 46px 46px 50px 44px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
               <span>Mốc</span>
+              <span style="text-align:center;color:#94a3b8">Đất m³</span>
               <span style="text-align:center;color:#60a5fa">BT m³</span>
               <span style="text-align:center;color:#34d399">CT kg</span>
               <span style="text-align:center;color:#fbbf24">CF m²</span>
@@ -1007,7 +1008,6 @@ option{background:#111827}
               <span style="text-align:center;color:#a78bfa">TT m²</span>
               <span style="text-align:center;color:#38bdf8">C.Thấm</span>
               <span style="text-align:center;color:#fb923c">MEP</span>
-              <span style="text-align:center;color:#94a3b8">Đào</span>
             </div>
             <div id="ep-kl-rows" style="max-height:200px;overflow-y:auto"></div>
           </div>
@@ -2186,9 +2186,10 @@ function edBuildKLTable(){
     const row=document.createElement('div');
     row.className='ep-kl-row';
     row.setAttribute('data-code',code);
-    row.style.cssText='display:grid;grid-template-columns:1.3fr 46px 46px 46px 46px 46px 50px 44px 44px;gap:0;border-bottom:1px solid #111827;align-items:center';
+    row.style.cssText='display:grid;grid-template-columns:1.3fr 50px 46px 46px 46px 46px 46px 50px 44px;gap:0;border-bottom:1px solid #111827;align-items:center';
     row.innerHTML=`
       <div style="padding:5px 8px;font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${name}">${name}</div>
+      <input class="ep-kl-dd"    type="number" placeholder="0" step="1"     ${isDD?'':'disabled'} style="${isDD?active('#94a3b8'):locked}">
       <input class="ep-kl-bt"    type="number" placeholder="0" step="0.01"  ${isKC?'':'disabled'} style="${isKC?active('#60a5fa'):locked}">
       <input class="ep-kl-ct"    type="number" placeholder="0" step="0.001" ${isKC?'':'disabled'} style="${isKC?active('#34d399'):locked}">
       <input class="ep-kl-cf"    type="number" placeholder="0" step="0.1"   ${isKC?'':'disabled'} style="${isKC?active('#fbbf24'):locked}">
@@ -2196,7 +2197,6 @@ function edBuildKLTable(){
       <input class="ep-kl-tt"    type="number" placeholder="0" step="0.1"   ${isTT?'':'disabled'} style="${isTT?active('#a78bfa'):locked}">
       <input class="ep-kl-ctham" type="number" placeholder="0" step="1"     ${(isCT||isHT)?'':'disabled'} style="${(isCT||isHT)?active('#38bdf8'):locked}">
       <input class="ep-kl-mep"   type="number" placeholder="0" step="1"     ${(isMEP||isHT)?'':'disabled'} style="${(isMEP||isHT)?active('#fb923c'):locked}">
-      <input class="ep-kl-dd"    type="number" placeholder="0" step="1"     ${isDD?'':'disabled'} style="${isDD?active('#94a3b8'):locked}">
     `;
     container.appendChild(row);
   });
