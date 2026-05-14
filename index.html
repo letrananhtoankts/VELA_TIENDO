@@ -2283,8 +2283,8 @@ function edSaveUnit(){
     const ddInp=row.querySelector('.ep-kl-dd');
     const chongtham=ctInp?parseFloat(ctInp.value)||0:0;
     const mep=mepInp?parseFloat(mepInp.value)||0:0;
-    const daodат=ddInp?parseFloat(ddInp.value)||0:0;
-    klData.push({code,bt,ct,cf,xt,tt,chongtham,mep,daodат});
+    const daodatVal=ddInp?parseFloat(ddInp.value)||0:0;
+    klData.push({code,bt,ct,cf,xt,tt,chongtham,mep,daodatVal});
   });
   // Lấy màu: nếu edit giữ màu cũ, nếu mới tạo màu mới
   let color;
@@ -2378,7 +2378,7 @@ function edEditUnit(id,e){
         const ttInp=row.querySelector('.ep-kl-tt');if(ttInp)ttInp.value=kl.tt||'';
         const cthamInp=row.querySelector('.ep-kl-ctham');if(cthamInp)cthamInp.value=kl.chongtham||'';
         const mepInp=row.querySelector('.ep-kl-mep');if(mepInp)mepInp.value=kl.mep||'';
-        const ddInp=row.querySelector('.ep-kl-dd');if(ddInp)ddInp.value=kl.daodат||'';
+        const ddInp=row.querySelector('.ep-kl-dd');if(ddInp)ddInp.value=kl.daodatVal||'';
       }
     });
   }
@@ -2479,8 +2479,8 @@ async function edWriteToSheet(){
         const u=edUnits[id];
         if(u.klData&&u.klData.length){
           u.klData.forEach(kl=>{
-            if(kl.bt||kl.ct||kl.cf||kl.xt||kl.tt||kl.chongtham||kl.mep||kl.daodат)
-              newKLRows.push([id,kl.code,kl.bt,kl.ct,kl.cf,kl.xt||0,kl.tt||0,kl.chongtham||0,kl.mep||0,kl.daodат||0]);
+            // Ghi tất cả dòng (kể cả = 0) để giữ cấu trúc đầy đủ
+            newKLRows.push([id,kl.code,kl.bt||0,kl.ct||0,kl.cf||0,kl.xt||0,kl.tt||0,kl.chongtham||0,kl.mep||0,kl.daodatVal||0]);
           });
         }
       });
