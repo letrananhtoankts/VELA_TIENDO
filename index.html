@@ -2266,7 +2266,7 @@ function edSaveUnit(){
   const isEdit=!!edEditingId;
   const finalPts = edPts.length>=3 ? edPts : (isEdit&&edUnits[edEditingId]?edUnits[edEditingId].pts:[]);
   if(finalPts.length<3){toast('Cần ≥3 điểm để xác định polygon!','err');return;}
-  const type=edUnits[ids[0]]?.type||UNIT_TYPES[0]?.code||'BTV';
+  const type=(edEditingId&&edUnits[edEditingId]?.type)||VI[id]?.type||UNIT_TYPES[0]?.code||'BTV';
   const area=document.getElementById('ep-area').value;
   const imgurl=document.getElementById('ep-imgurl').value;
   // Collect KL data
