@@ -974,7 +974,7 @@ option{background:#111827}
             4. Click <b style="color:#10b981">☁ Ghi Sheet</b> (cần đăng nhập) để lưu thẳng lên MapConfig<br>
             5. Hoặc click <b style="color:#60a5fa">📋 Copy</b> → paste vào Google Sheet thủ công<br><br>
             <b style="color:#94a3b8">Cấu trúc Sheet dự án cần có 4 tab:</b><br>
-            <span style="font-family:'JetBrains Mono',monospace;color:#60a5fa">MasterStatus · KLTongHop · VillaInfo · MapConfig</span>
+            <span style="font-family:'JetBrains Mono',monospace;color:#60a5fa">MasterStatus · KLTongHopKC · VillaInfo · MapConfig</span>
           </div>
         </div>
       </div>
@@ -1284,7 +1284,7 @@ async function loadProjectData(){
   try{
     const[rS,rK,rM,rV,rMS,rUT]=await Promise.all([
       gapi(CUR.sheetId,'MasterStatus!A:C'),
-      gapi(CUR.sheetId,'KLTongHop!A:L'),
+      gapi(CUR.sheetId,'KLTongHopKC!A:L'),
       gapi(CUR.sheetId,'MapConfig!A:B'),
       gapi(CUR.sheetId,'VillaInfo!A:E'),
       gapi(CUR.sheetId,'MilestoneConfig!A:E'),
@@ -2041,8 +2041,8 @@ function edLoadExistingCoords(){
   edUnits={};edPolyL.innerHTML='';edColorIdx=0;
   Object.entries(COORDS).forEach(([id,pts])=>{
     const vi=VI[id]||{};
-    // Rebuild klData từ KL global (đã load từ KLTongHop khi mở dự án)
-    // Nhưng KL chỉ có done/plan, không có từng mốc → dùng KLDinhMuc raw nếu có
+    // Rebuild klData từ KL global (đã load từ KLTongHopKC khi mở dự án)
+    // Nhưng KL chỉ có done/plan, không có từng mốc → dùng KLDinhMucKC raw nếu có
     // Tạm thời build klData rỗng, khi edit user có thể nhập lại
     // QUAN TRỌNG: khi Ghi Sheet, các căn không edit sẽ được giữ từ Sheet (merge logic)
     const klData=MS_CODES.map(code=>({code,bt:0,ct:0,cf:0}));
@@ -2293,9 +2293,9 @@ async function edWriteToSheet(){
       }).then(r=>r.json());
     }
 
-    // ── KLDinhMuc: đọc Sheet → giữ tất cả căn khác nguyên vẹn → chỉ ghi đè căn trong idSet nếu có klData thực ──
+    // ── KLDinhMucKC: đọc Sheet → giữ tất cả căn khác nguyên vẹn → chỉ ghi đè căn trong idSet nếu có klData thực ──
     try{
-      const existKL=await gapi(CUR.sheetId,'KLDinhMuc!A:E');
+      const existKL=await gapi(CUR.sheetId,'KLDinhMucKC!A:E');
       const klVals=existKL.values||[];
       // Giữ header + tất cả dòng KHÔNG thuộc idSet
       const keptKL=klVals.filter((row,i)=>i===0||!idSet.has(row[0]));
@@ -2315,16 +2315,16 @@ async function edWriteToSheet(){
       // Với căn không có KL mới: giữ lại dòng cũ từ Sheet
       const keepOldKL=klVals.filter((row,i)=>i>0&&idsWithoutNewKL.includes(row[0]));
       const newKL=[...keptKL,...keepOldKL,...newKLRows];
-      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:E10000:clear`,{
+      await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMucKC!A1:E10000:clear`,{
         method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}
       });
       if(newKL.length){
-        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMuc!A1:E${newKL.length}?valueInputOption=USER_ENTERED`,{
+        await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMucKC!A1:E${newKL.length}?valueInputOption=USER_ENTERED`,{
           method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},
           body:JSON.stringify({values:newKL})
         }).then(r=>r.json());
       }
-    }catch(e){toast('Lỗi ghi KLDinhMuc: '+e.message,'err');}
+    }catch(e){toast('Lỗi ghi KLDinhMucKC: '+e.message,'err');}
 
     toast(`✓ Đã cập nhật ${ids.length} căn · Dữ liệu các căn khác giữ nguyên`);
     await loadProjectData();
