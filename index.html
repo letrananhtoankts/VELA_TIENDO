@@ -448,6 +448,38 @@ option{background:#111827}
 .admin-lock p{font-size:11px;line-height:1.7}
 
 /* ── WORKLOG TABLE ── */
+/* MAP MODE SWITCH */
+.map-mode-bar{display:flex;gap:4px;padding:5px 14px;background:#0d1520;border-bottom:1px solid #1e293b;flex-shrink:0;align-items:center}
+.map-mode-btn{font-family:inherit;font-size:10px;font-weight:600;padding:5px 16px;border-radius:6px;cursor:pointer;border:1px solid #1e293b;background:transparent;color:#475569;transition:all .15s}
+.map-mode-btn.active{background:#C8A96E;color:#0f172a;border-color:#C8A96E}
+.map-mode-btn:hover:not(.active){border-color:#334155;color:#94a3b8}
+/* HT Panel desktop */
+.ht-panel{padding:10px 12px;border-top:1px solid var(--border)}
+.ht-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.ht-chip{display:flex;align-items:center;gap:5px;padding:6px 8px;border-radius:8px;font-size:10px;border:1px solid var(--border);background:#f8fafc;cursor:pointer;transition:all .15s}
+.ht-chip.done{background:#dcfce7;border-color:#86efac;color:#166534}
+.ht-chip.pend{background:#f1f5f9;color:#64748b}
+.ht-chip:hover:not(.done){background:#e0f2fe;border-color:#7dd3fc}
+.ht-chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ht-chip-date{font-size:8px;color:#94a3b8;margin-top:1px}
+/* HT Mobile */
+.bs-ht-section{padding:0 18px 14px}
+.bs-ht-chip{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;font-size:11px;border:1px solid #1e293b;cursor:pointer;margin-bottom:5px;transition:all .15s}
+.bs-ht-chip.done{background:rgba(52,211,153,.1);border-color:#34d399;color:#34d399}
+.bs-ht-chip.pend{background:#111827;color:#475569}
+/* HT Editor KL */
+.ht-kl-table{width:100%;border-collapse:collapse;font-size:10px;margin-top:6px}
+.ht-kl-table th{background:#0a0f18;color:#475569;font-weight:600;padding:5px 6px;border:1px solid #1e293b;text-align:center;font-size:9px}
+.ht-kl-table td{padding:4px 6px;border:1px solid #1e293b}
+.ht-kl-inp{background:#0f172a;border:none;color:#e2e8f0;font-size:10px;padding:3px 5px;width:100%;outline:none;text-align:center;font-family:inherit}
+/* Proj bar 2 rows */
+.proj-bar-row{display:grid;gap:6px}
+.proj-bar-row.row1{grid-template-columns:1fr 1fr 1fr}
+.proj-bar-row.row2{grid-template-columns:1fr 1fr 1fr 1fr auto}
+/* Tab switch KC/HT in editor */
+.ed-kl-tabs{display:flex;gap:0;margin-bottom:8px;background:#1e293b;border-radius:7px;padding:2px}
+.ed-kl-tab{flex:1;font-family:inherit;font-size:10px;font-weight:600;padding:5px;border:none;border-radius:5px;cursor:pointer;background:transparent;color:#475569;transition:all .15s}
+.ed-kl-tab.active{background:#C8A96E;color:#0f172a}
 .wl-section{padding:10px 12px;border-top:1px solid var(--border)}
 .wl-table{width:100%;border-collapse:collapse;font-size:10px;margin-top:6px}
 .wl-table th{background:#111827;color:#64748b;font-weight:600;padding:5px 6px;text-align:center;border:1px solid #1e293b;font-size:9px;letter-spacing:.04em}
@@ -717,8 +749,9 @@ option{background:#111827}
 
     <!-- Tabs (chỉ hiện với editor/admin) -->
     <div class="bs-tabs" id="bs-tabs" style="display:none">
-      <button class="bs-tab-btn active" id="bs-tab-view-btn" onclick="switchBsTab('view')">📋 Tiến độ & Ảnh</button>
-      <button class="bs-tab-btn" id="bs-tab-edit-btn" onclick="switchBsTab('edit')">✏️ Cập nhật</button>
+      <button class="bs-tab-btn active" id="bs-tab-view-btn" onclick="switchBsTab('view')">📋 Tiến độ</button>
+      <button class="bs-tab-btn" id="bs-tab-edit-btn" onclick="switchBsTab('edit')">🏗 KC</button>
+      <button class="bs-tab-btn" id="bs-tab-ht-btn" onclick="switchBsTab('edit-ht')" style="background:transparent;color:#475569">🎨 HT</button>
     </div>
 
     <div class="bs-scroll-area">
@@ -727,12 +760,41 @@ option{background:#111827}
         <div class="bs-timeline" id="bs-timeline"></div>
         <!-- WorkLog table mobile -->
         <div style="padding:0 18px 14px" id="bs-wl-wrap">
-          <div style="font-size:11px;font-weight:700;color:#93c5fd;margin-bottom:8px">📊 Công tác chi tiết</div>
+          <div style="font-size:11px;font-weight:700;color:#93c5fd;margin-bottom:8px">📊 KC chi tiết</div>
           <div id="bs-wl-table-wrap"></div>
+        </div>
+        <!-- HT section mobile -->
+        <div class="bs-ht-section" id="bs-ht-wrap">
+          <div style="font-size:11px;font-weight:700;color:#a78bfa;margin-bottom:8px">🎨 Hoàn thiện</div>
+          <div id="bs-ht-list"></div>
+          <button id="bs-ht-edit-btn" onclick="switchBsTab('edit-ht')" style="display:none;width:100%;font-family:inherit;font-size:12px;padding:8px;border-radius:8px;border:1px dashed #334155;background:transparent;color:#a78bfa;cursor:pointer;margin-top:6px">✏️ Cập nhật HT</button>
         </div>
       </div>
 
-      <!-- TAB CẬP NHẬT: WorkLog Form -->
+      <!-- TAB CẬP NHẬT HT -->
+      <div class="bs-tab-pane" id="bs-pane-edit-ht">
+        <div class="bs-section">
+          <div class="bs-label" style="color:#a78bfa">🎨 Cập nhật Hoàn thiện</div>
+          <div id="bs-ht-check-list" style="margin-bottom:10px"></div>
+          <div class="bs-label">Ngày cập nhật</div>
+          <input type="date" class="bs-date-inp" id="bs-ht-date-inp">
+          <div class="bs-label" style="margin-top:4px">📷 Ảnh nghiệm thu</div>
+          <div id="bs-ht-photo-preview-wrap" style="display:none;position:relative;margin-bottom:8px">
+            <img id="bs-ht-photo-preview" style="width:100%;max-height:140px;object-fit:cover;border-radius:10px;display:block" src="" alt="">
+            <button onclick="clearHtMobPhoto()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:13px;font-family:inherit">✕</button>
+          </div>
+          <div class="photo-upload-area" id="bs-ht-upload-area" style="border-color:#1e293b;background:rgba(255,255,255,.03)">
+            <input type="file" id="bs-ht-photo-input" accept="image/*" capture="environment" onchange="onHtMobPhotoSelected(this)">
+            <div style="font-size:13px;color:#475569">📷 Chụp / Chọn ảnh</div>
+          </div>
+          <div class="upload-prog" id="bs-ht-upload-prog"><div class="upload-prog-fill" id="bs-ht-upload-fill"></div></div>
+        </div>
+        <div class="bs-btns">
+          <button class="bs-cancel-btn" onclick="switchBsTab('view')">← Quay lại</button>
+          <button class="bs-save-btn" onclick="submitHtMobUpdate()" style="background:#7c3aed">✓ Lưu HT</button>
+        </div>
+      </div>
+      <!-- TAB CẬP NHẬT KC -->
       <div class="bs-tab-pane" id="bs-pane-edit">
         <div id="bs-form-wrap">
           <div class="bs-section">
@@ -778,9 +840,62 @@ option{background:#111827}
 
   <!-- TAB: MAP -->
   <div class="tab-content active" id="tab-map">
+    <!-- Map mode switch -->
+    <div class="map-mode-bar">
+      <button class="map-mode-btn active" id="btn-mode-kc" onclick="switchMapMode('kc')">🏗 Kết cấu</button>
+      <button class="map-mode-btn" id="btn-mode-ht" onclick="switchMapMode('ht')">🎨 Hoàn thiện</button>
+      <span class="map-mode-label" id="map-mode-label">Đang xem: Tiến độ Kết cấu</span>
+    </div>
     <div class="proj-bar">
       <!-- Hàng 1: BT, CT, CF -->
       <div class="proj-bar-row row1">
+        <div class="proj-item">
+          <div class="proj-label">Bê tông</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-c-done">—</span><span class="proj-total" id="proj-c-total">/ —</span><span class="proj-unit">m³</span><span class="proj-pct-badge" id="proj-c-pct" style="background:#1e3a5f;color:#60a5fa">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-c-bar" style="width:0%;background:#60a5fa"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Cốt thép</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-r-done">—</span><span class="proj-total" id="proj-r-total">/ —</span><span class="proj-unit">kg</span><span class="proj-pct-badge" id="proj-r-pct" style="background:#14532d;color:#34d399">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-r-bar" style="width:0%;background:#34d399"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Coppha</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-f-done">—</span><span class="proj-total" id="proj-f-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-f-pct" style="background:#451a03;color:#fbbf24">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-f-bar" style="width:0%;background:#fbbf24"></div></div>
+        </div>
+      </div>
+      <!-- Hàng 2: XT, TT, CT, MEP + Đang TC -->
+      <div class="proj-bar-row row2">
+        <div class="proj-item">
+          <div class="proj-label">Xây tường</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-x-done">—</span><span class="proj-total" id="proj-x-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-x-pct" style="background:#4a1942;color:#f472b6">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-x-bar" style="width:0%;background:#f472b6"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Tô tường</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-t-done">—</span><span class="proj-total" id="proj-t-total">/ —</span><span class="proj-unit">m²</span><span class="proj-pct-badge" id="proj-t-pct" style="background:#2e1a5e;color:#a78bfa">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-t-bar" style="width:0%;background:#a78bfa"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">Chống thấm</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-ct-done">—</span><span class="proj-total" id="proj-ct-total">/ —</span><span class="proj-unit">căn</span><span class="proj-pct-badge" id="proj-ct-pct" style="background:#0c4a6e;color:#38bdf8">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-ct-bar" style="width:0%;background:#38bdf8"></div></div>
+        </div>
+        <div class="proj-item">
+          <div class="proj-label">MEP</div>
+          <div class="proj-nums"><span class="proj-done" id="proj-mep-done">—</span><span class="proj-total" id="proj-mep-total">/ —</span><span class="proj-unit">căn</span><span class="proj-pct-badge" id="proj-mep-pct" style="background:#431407;color:#fb923c">—</span></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-fill" id="proj-mep-bar" style="width:0%;background:#fb923c"></div></div>
+        </div>
+        <div class="proj-item" style="background:transparent;display:flex;align-items:center;justify-content:center;padding:5px 16px">
+          <div style="text-align:center">
+            <div style="font-size:8px;color:#475569;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Đang TC</div>
+            <div style="font-size:22px;font-weight:700;color:var(--gold)" id="proj-active">—</div>
+            <div style="font-size:10px;color:#475569">/ <span id="proj-total-units">—</span> căn</div>
+          </div>
+        </div>
+      </div>
+    </div>
         <div class="proj-item">
           <div class="proj-label">Bê tông</div>
           <div class="proj-nums"><span class="proj-done" id="proj-c-done">—</span><span class="proj-total" id="proj-c-total">/ —</span><span class="proj-unit">m³</span><span class="proj-pct-badge" id="proj-c-pct" style="background:#1e3a5f;color:#60a5fa">—</span></div>
@@ -906,7 +1021,7 @@ option{background:#111827}
           <div class="kls"><div class="sttl">Khối lượng</div><div class="kl-chart-wrap"><canvas id="kl-chart"></canvas></div><div id="kli"></div></div>
           <!-- WorkLog Section -->
           <div class="wl-section" id="desktop-wl-section">
-            <div class="sttl">📊 Tiến độ công tác chi tiết</div>
+            <div class="sttl">📊 Tiến độ KC chi tiết</div>
             <div id="desktop-wl-table-wrap"></div>
             <div class="wl-form" id="desktop-wl-form" style="display:none">
               <div class="wl-form-title" id="desktop-wl-form-title">Cập nhật công tác</div>
@@ -934,6 +1049,37 @@ option{background:#111827}
               <div style="display:flex;gap:6px">
                 <button onclick="submitWlUpdate()" style="flex:2;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:none;background:#10b981;color:#fff;font-weight:600">✓ Lưu công tác</button>
                 <button onclick="closeWlForm()" style="flex:1;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:1px solid #334155;background:transparent;color:#64748b">✕ Hủy</button>
+              </div>
+            </div>
+          </div>
+          <!-- HT Section -->
+          <div class="ht-panel" id="desktop-ht-section">
+            <div class="sttl">🎨 Tiến độ Hoàn thiện</div>
+            <div id="desktop-ht-grid"></div>
+            <!-- HT Update Form -->
+            <div id="desktop-ht-form" style="display:none;margin-top:8px;background:rgba(0,0,0,.04);border-radius:8px;padding:10px;border:1px solid var(--border)">
+              <div style="font-size:9px;font-weight:700;color:#3b82f6;margin-bottom:6px;text-transform:uppercase">✏️ Cập nhật Hoàn thiện</div>
+              <div id="ht-update-villa" style="font-size:10px;font-weight:600;color:#0f172a;margin-bottom:6px"></div>
+              <div id="ht-check-list" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px"></div>
+              <div style="margin-bottom:6px">
+                <div style="font-size:8px;color:#64748b;margin-bottom:3px">Ngày cập nhật</div>
+                <input id="ht-date-inp" type="date" style="width:100%;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;padding:5px 8px;font-size:11px;color:#0f172a;font-family:inherit;outline:none">
+              </div>
+              <div style="margin-bottom:8px">
+                <div style="font-size:8px;color:#64748b;margin-bottom:4px">📷 Ảnh nghiệm thu</div>
+                <div id="ht-photo-preview-wrap" style="display:none;position:relative;margin-bottom:6px">
+                  <img id="ht-photo-preview" style="width:100%;max-height:100px;object-fit:cover;border-radius:6px" src="" alt="">
+                  <button onclick="clearHtPhoto()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:10px;font-family:inherit">✕</button>
+                </div>
+                <div class="photo-upload-area" id="ht-upload-area" style="padding:6px">
+                  <input type="file" id="ht-photo-input" accept="image/*" onchange="onHtPhotoSelected(this)">
+                  <div style="font-size:10px;color:#64748b">📷 Chọn ảnh</div>
+                </div>
+                <div class="upload-prog" id="ht-upload-prog"><div class="upload-prog-fill" id="ht-upload-fill"></div></div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button onclick="submitHtUpdate()" style="flex:2;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:none;background:#3b82f6;color:#fff;font-weight:600">✓ Lưu HT</button>
+                <button onclick="closeHtForm()" style="flex:1;font-family:inherit;font-size:11px;padding:7px;border-radius:6px;cursor:pointer;border:1px solid #e2e8f0;background:transparent;color:#64748b">✕ Hủy</button>
               </div>
             </div>
           </div>
@@ -993,21 +1139,39 @@ option{background:#111827}
           <div class="ep-title">Thông tin căn <span class="ep-badge" id="ep-cnt">0</span><span class="ep-edit-badge" id="ep-edit-badge" style="display:none">✏️ ĐANG SỬA</span></div>
           <div class="efl">Mã căn (ID)</div><input class="efi" id="ep-id" placeholder="SD10-5, DV18-1 ...">
           <div style="display:flex;gap:4px"><div style="flex:1"><div class="efl">Diện tích</div><input class="efi" id="ep-area" placeholder="160 m²"></div><div style="flex:1"><div class="efl">Image URL</div><input class="efi" id="ep-imgurl" placeholder="https://..."></div></div>
-          <!-- KL Table -->
-          <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán cộng dồn theo mốc</div>
-          <div id="ep-kl-table" style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px;width:100%">
-            <div style="display:grid;grid-template-columns:1.3fr 50px 46px 46px 46px 46px 46px 50px 44px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
-              <span>Mốc</span>
-              <span style="text-align:center;color:#94a3b8">Đất m³</span>
-              <span style="text-align:center;color:#60a5fa">BT m³</span>
-              <span style="text-align:center;color:#34d399">CT kg</span>
-              <span style="text-align:center;color:#fbbf24">CF m²</span>
-              <span style="text-align:center;color:#f472b6">XT m²</span>
-              <span style="text-align:center;color:#a78bfa">TT m²</span>
-              <span style="text-align:center;color:#38bdf8">C.Thấm</span>
-              <span style="text-align:center;color:#fb923c">MEP</span>
+          <!-- KL Table với 2 tab KC / HT -->
+          <div class="efl" style="margin-top:6px;margin-bottom:4px">KL dự toán</div>
+          <div class="ed-kl-tabs">
+            <button class="ed-kl-tab active" id="ed-kl-tab-kc" onclick="switchEdKLTab('kc')">🏗 Kết cấu</button>
+            <button class="ed-kl-tab" id="ed-kl-tab-ht" onclick="switchEdKLTab('ht')">🎨 Hoàn thiện</button>
+          </div>
+          <!-- KC KL Table -->
+          <div id="ep-kl-kc-wrap">
+            <div id="ep-kl-table" style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px;width:100%">
+              <div style="display:grid;grid-template-columns:1.3fr 50px 46px 46px 46px 46px 46px 50px 44px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
+                <span>Mốc</span>
+                <span style="text-align:center;color:#94a3b8">Đất m³</span>
+                <span style="text-align:center;color:#60a5fa">BT m³</span>
+                <span style="text-align:center;color:#34d399">CT kg</span>
+                <span style="text-align:center;color:#fbbf24">CF m²</span>
+                <span style="text-align:center;color:#f472b6">XT m²</span>
+                <span style="text-align:center;color:#a78bfa">TT m²</span>
+                <span style="text-align:center;color:#38bdf8">C.Thấm</span>
+                <span style="text-align:center;color:#fb923c">MEP</span>
+              </div>
+              <div id="ep-kl-rows" style="max-height:200px;overflow-y:auto"></div>
             </div>
-            <div id="ep-kl-rows" style="max-height:200px;overflow-y:auto"></div>
+          </div>
+          <!-- HT KL Table -->
+          <div id="ep-kl-ht-wrap" style="display:none">
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:6px;overflow:hidden;margin-bottom:6px">
+              <div style="display:grid;grid-template-columns:1.4fr 1fr 70px;gap:0;font-size:9px;font-weight:700;color:#475569;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid #1e293b;background:#111827">
+                <span>Hạng mục HT</span>
+                <span style="text-align:center;color:#a78bfa">KL Plan</span>
+                <span style="text-align:center;color:#64748b">Đơn vị</span>
+              </div>
+              <div id="ep-ht-kl-rows" style="max-height:200px;overflow-y:auto"></div>
+            </div>
           </div>
           <div class="epts"><div><span class="eptsn" id="ep-ptsc">0</span><span style="font-size:9px;color:#475569"> điểm</span></div><div class="eptsh" id="ep-ptsh">Click bản đồ để bắt đầu vẽ</div></div>
           <div class="ep-btns">
@@ -1131,6 +1295,10 @@ let mapW=2000, mapH=1760;
 let msFilter=null; // milestone filter hiện tại
 // Auth
 let authToken=null, authUser=null, tokenClient=null, userRole='viewer';
+let userProjectAccess='ALL';
+// HT state
+let HT_CONFIG=[], HT_STATUS={}, KL_HT={};
+let mapMode='kc'; // 'kc' hoặc 'ht'
 
 // ════════════════════════════════════════
 // HELPERS
@@ -1240,15 +1408,30 @@ function signOut(){
 
 async function checkWhitelist(email){
   try{
-    const data=await gapi(REGISTRY_ID,'Whitelist!A:B');
+    const data=await gapi(REGISTRY_ID,'Whitelist!A:D');
     const rows=(data.values||[]).slice(1).filter(r=>r[0]);
     const found=rows.find(r=>r[0].trim().toLowerCase()===email.toLowerCase());
-    userRole=found?( found[1]||'viewer').toLowerCase():'viewer';
-  }catch(e){userRole='viewer';}
+    if(found){
+      userRole=(found[1]||'viewer').toLowerCase();
+      userProjectAccess=(found[3]||'ALL').trim().toUpperCase();
+    } else {
+      userRole='viewer';
+      userProjectAccess='';
+    }
+  }catch(e){userRole='viewer';userProjectAccess='';}
+}
+
+function canAccessProject(projectId){
+  if(!projectId)return true;
+  if(userProjectAccess==='ALL')return true;
+  if(!userProjectAccess)return false;
+  return userProjectAccess.split(',').map(s=>s.trim().toUpperCase()).includes(projectId.toUpperCase());
 }
 
 function canEdit(){return userRole==='admin'||userRole==='editor';}
 function isAdmin(){return userRole==='admin';}
+function isBGD(){return userRole==='bgd';}
+function canSeeAll(){return userRole==='admin'||userRole==='bgd';}
 
 function updateAuthUI(){
   const logged=!!authUser;
@@ -1343,7 +1526,7 @@ async function loadRegistry(){
       id:r[0]||'',name:r[1]||r[0],sheetId:r[2]||'',
       color:r[3]||'#C8A96E',imageUrl:r[4]||'',
       imgW:parseInt(r[6])||2000,imgH:parseInt(r[7])||1760,
-    }));
+    })).filter(p=>canAccessProject(p.id));
     grid.innerHTML='';
     PROJECTS.forEach(p=>{
       const card=document.createElement('div');
@@ -1448,12 +1631,12 @@ async function loadProjectData(){
       VI[id]={type:row[1]||'—',sub:row[2]||'—',area:row[3]?row[3]+' m²':'—',imageUrl:driveDirect(row[4]||''),floors:parseInt(row[5])||0};
     });
     setupMapSVG();updateProjSummary();renderMobileOverview();
-    // Load WorkLog sau (không block map render)
-    loadWorkLog().then(()=>{
-      // Nếu đang xem 1 căn thì refresh WL table
-      if(sel) renderDesktopWLTable(sel);
+    // Load WorkLog và HT sau (không block map render)
+    loadWorkLog().then(()=>{if(sel)renderDesktopWLTable(sel);});
+    loadHTConfig().then(()=>loadHTStatus()).then(()=>loadKLHT()).then(()=>{
+      if(sel){renderDesktopHTGrid(sel);}
+      if(mapMode==='ht')renderAll();
     });
-    loadPhotoLog();
     document.getElementById('lupd').textContent='Cập nhật: '+new Date().toLocaleTimeString('vi-VN');
     document.getElementById('mob-upd-date').textContent=new Date().toLocaleDateString('vi-VN');
   }catch(e){
@@ -1507,16 +1690,18 @@ function renderAll(){
     const poly=document.createElementNS('http://www.w3.org/2000/svg','polygon');
     poly.setAttribute('points',pts);
     // Milestone filter logic
-    if(msFilter!==null){
-      const unitMs=s?s.ms:null;
-      const unitMsIdx=unitMs?mi(unitMs):-1;
+    if(mapMode==='ht'){
+      poly.setAttribute('fill',getHTColor(id));
+      poly.setAttribute('opacity','0.82');
+    } else if(msFilter!==null){
+      const unitMsIdx=s?mi(s.ms):-1;
       const filterIdx=mi(msFilter);
-      // Căn đạt milestone được filter (đã qua hoặc đang ở mốc đó)
-      const matched = unitMsIdx>=filterIdx && filterIdx>=0;
-      poly.setAttribute('fill', matched ? gc(id) : '#1e293b');
-      poly.setAttribute('opacity', matched ? '0.9' : '0.25');
+      const matched=unitMsIdx>=filterIdx&&filterIdx>=0;
+      poly.setAttribute('fill',matched?gc(id):'#1e293b');
+      poly.setAttribute('opacity',matched?'0.9':'0.25');
     } else {
-      poly.setAttribute('fill',gc(id));poly.setAttribute('opacity','0.82');
+      poly.setAttribute('fill',gc(id));
+      poly.setAttribute('opacity','0.82');
     }
     poly.setAttribute('id','p-'+id.replace(/[^a-zA-Z0-9]/g,'-'));
     if(sel===id)poly.classList.add('sel');if(multiSel.has(id))poly.classList.add('multi-sel');
@@ -1532,6 +1717,7 @@ function renderAll(){
   document.getElementById('s-done').textContent=done;document.getElementById('s-none').textContent=none;
   buildLeg();if(sel)showSinglePanel(sel);
   updateFilterBadge();
+  if(mapMode==='ht')buildHTLeg();
 }
 
 function buildLeg(){
@@ -1633,6 +1819,8 @@ function showSinglePanel(id){
   document.getElementById('pf').textContent=s.date?'Cập nhật: '+s.date:'Chưa có dữ liệu';
   // Render WorkLog table
   renderDesktopWLTable(id);
+  // Render HT grid
+  renderDesktopHTGrid(id);
   // Render photo evidence
   renderDesktopPhotoGrid(id);
   // Show/hide update button based on role
@@ -2226,6 +2414,9 @@ function edLoadExistingCoords(){
   });
   edRenderList();edUpdateExp();
   edBuildKLTable();
+  // Build HT KL table với căn đầu tiên hoặc rỗng
+  const firstId=Object.keys(edUnits)[0];
+  if(firstId)edBuildHTKLTable(firstId);
   if(Object.keys(edUnits).length)toast(`Đã load ${Object.keys(edUnits).length} căn từ ${CUR.name}`);
 }
 
@@ -2365,8 +2556,10 @@ function edEditUnit(id,e){
   // Diện tích và image URL
   document.getElementById('ep-area').value=(u.area||'').replace(/\s*m²/,'');
   document.getElementById('ep-imgurl').value=u.imgurl||'';
-  // Load KL data vào bảng
+  // Load KL data vào bảng KC
   edBuildKLTable();
+  // Load HT KL table
+  edBuildHTKLTable(id);
   if(u.klData&&u.klData.length){
     u.klData.forEach(kl=>{
       const row=document.querySelector(`.ep-kl-row[data-code="${kl.code}"]`);
@@ -2500,6 +2693,10 @@ async function edWriteToSheet(){
     }catch(e){toast('Lỗi ghi KLDinhMuc: '+e.message,'err');}
 
     toast(`✓ Đã cập nhật ${ids.length} căn · Dữ liệu các căn khác giữ nguyên`);
+    // Ghi KLDinhMucHT nếu tab HT đang active
+    if(document.getElementById('ep-kl-tab-ht')?.classList.contains('active')){
+      await edWriteHTKLToSheet(ids);
+    }
     await loadProjectData();
   }catch(e){toast('Lỗi ghi Sheet: '+e.message,'err');}
   finally{const btn=document.getElementById('ep-write');btn.textContent='☁ Ghi Sheet';btn.disabled=false;}
@@ -3225,6 +3422,280 @@ async function submitWlUpdate(){
 }
 
 // ════════════════════════════════════════
+// HT ENGINE (V7)
+// ════════════════════════════════════════
+
+async function loadHTConfig(){
+  if(!CUR)return;
+  HT_CONFIG=[];
+  try{
+    const data=await gapi(CUR.sheetId,'HTConfig!A:E');
+    const rows=(data.values||[]).slice(1).filter(r=>r[0]!=='');
+    if(rows.length){
+      rows.sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+      HT_CONFIG=rows.map(r=>({order:parseInt(r[0]),code:r[1]||'',name:r[2]||'',color:r[3]||'#94a3b8',workType:r[4]||'HT'}));
+    }
+  }catch(e){console.warn('HTConfig:',e.message);}
+}
+
+async function loadHTStatus(){
+  if(!CUR)return;
+  HT_STATUS={};
+  try{
+    const data=await gapi(CUR.sheetId,'HTStatus!A:F');
+    const rows=(data.values||[]).slice(1).filter(r=>r[0]);
+    rows.forEach(r=>{
+      const[villa,htCode,status,date,fileId,photoTime]=r;
+      if(!HT_STATUS[villa])HT_STATUS[villa]={};
+      HT_STATUS[villa][htCode]={status:status||'',date:date||'',fileId:fileId||'',photoTime:photoTime||''};
+    });
+  }catch(e){console.warn('HTStatus:',e.message);}
+}
+
+async function loadKLHT(){
+  if(!CUR)return;
+  KL_HT={};
+  try{
+    const data=await gapi(CUR.sheetId,'KLDinhMucHT!A:D');
+    const rows=(data.values||[]).slice(1).filter(r=>r[0]);
+    rows.forEach(r=>{
+      const[villa,htCode,klPlan,unit]=r;
+      if(!KL_HT[villa])KL_HT[villa]={};
+      KL_HT[villa][htCode]={plan:parseFloat(klPlan)||0,unit:unit||'m²'};
+    });
+  }catch(e){console.warn('KLDinhMucHT:',e.message);}
+}
+
+function getHTColor(villaId){
+  const status=HT_STATUS[villaId]||{};
+  const total=HT_CONFIG.length;
+  if(!total)return'#374151';
+  const done=HT_CONFIG.filter(h=>status[h.code]&&status[h.code].status==='done').length;
+  const pct=done/total*100;
+  if(pct===0)return'#374151';
+  if(pct<=30)return'#b45309';
+  if(pct<=70)return'#d97706';
+  if(pct<100)return'#059669';
+  return'#10b981';
+}
+
+function switchMapMode(mode){
+  mapMode=mode;
+  document.getElementById('btn-mode-kc').classList.toggle('active',mode==='kc');
+  document.getElementById('btn-mode-ht').classList.toggle('active',mode==='ht');
+  document.getElementById('map-mode-label').textContent=mode==='kc'?'Đang xem: Tiến độ Kết cấu':'Đang xem: Tiến độ Hoàn thiện';
+  renderAll();
+  if(mode==='ht')buildHTLeg();else buildLeg();
+}
+
+function buildHTLeg(){
+  const el=document.getElementById('li');el.innerHTML='';
+  const tot=Object.keys(COORDS).length;
+  [{label:'Hoàn thiện 100%',color:'#10b981',c:'#10b981'},
+   {label:'71-99%',color:'#059669',c:'#059669'},
+   {label:'31-70%',color:'#d97706',c:'#d97706'},
+   {label:'1-30%',color:'#b45309',c:'#b45309'}].forEach(b=>{
+    const cnt=Object.keys(COORDS).filter(v=>getHTColor(v)===b.c).length;
+    if(!cnt)return;
+    const div=document.createElement('div');
+    div.className='lr';
+    div.innerHTML=`<div class="ld" style="background:${b.color}"></div><span style="flex:1">${b.label}</span><span class="leg-cnt">${cnt}/${tot}</span>`;
+    el.appendChild(div);
+  });
+}
+
+function renderDesktopHTGrid(villaId){
+  const wrap=document.getElementById('desktop-ht-grid');
+  if(!wrap)return;
+  if(!HT_CONFIG.length){wrap.innerHTML='<div style="font-size:10px;color:#94a3b8;padding:6px 0">Chưa có cấu hình HTConfig</div>';return;}
+  const status=HT_STATUS[villaId]||{};
+  let html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px">';
+  HT_CONFIG.forEach(h=>{
+    const entry=status[h.code];
+    const done=entry&&entry.status==='done';
+    html+=`<div class="ht-chip ${done?'done':'pend'}" onclick="${canEdit()?`openHtFormAll('${villaId}')`:''}" style="cursor:${canEdit()?'pointer':'default'}">
+      <div class="ht-chip-dot" style="background:${done?h.color:'#cbd5e1'}"></div>
+      <div style="flex:1;min-width:0">
+        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9px">${h.name}</div>
+        ${done&&entry.date?`<div style="font-size:7px;color:#94a3b8">${entry.date}${entry.fileId?' 📷':''}</div>`:''}
+      </div>
+      ${done?'<span style="font-size:10px">✓</span>':''}
+    </div>`;
+  });
+  html+='</div>';
+  if(canEdit())html+=`<button onclick="openHtFormAll('${villaId}')" style="width:100%;margin-top:6px;font-family:inherit;font-size:10px;padding:5px;border-radius:6px;border:1px dashed #e2e8f0;background:transparent;color:#64748b;cursor:pointer">✏️ Cập nhật HT</button>`;
+  wrap.innerHTML=html;
+}
+
+function renderMobHTList(villaId){
+  const wrap=document.getElementById('bs-ht-list');
+  if(!wrap)return;
+  const status=HT_STATUS[villaId]||{};
+  if(!HT_CONFIG.length){wrap.innerHTML='<div style="font-size:10px;color:#475569">Chưa có cấu hình HT</div>';return;}
+  let html='';
+  HT_CONFIG.forEach(h=>{
+    const entry=status[h.code];
+    const done=entry&&entry.status==='done';
+    html+=`<div class="bs-ht-chip ${done?'done':'pend'}" ${entry&&entry.fileId?`onclick="openLightbox('${driveThumbUrl(entry.fileId,1200)}','${villaId} ${h.name}','${entry.photoTime||''}')"`:''}>
+      <span style="font-size:14px">${done?'✓':'○'}</span>
+      <div style="flex:1"><div>${h.name}</div>${done&&entry.date?`<div style="font-size:9px;opacity:.7">${entry.date}</div>`:''}</div>
+      ${entry&&entry.fileId?'📷':''}
+    </div>`;
+  });
+  wrap.innerHTML=html;
+  const editBtn=document.getElementById('bs-ht-edit-btn');
+  if(editBtn)editBtn.style.display=canEdit()?'':'none';
+}
+
+let _htPhotoFile=null,_htVillaId='';
+function openHtFormAll(villaId){
+  _htVillaId=villaId;
+  const status=HT_STATUS[villaId]||{};
+  document.getElementById('ht-update-villa').textContent='Cập nhật HT: '+villaId;
+  let html='';
+  HT_CONFIG.forEach(h=>{
+    const done=status[h.code]&&status[h.code].status==='done';
+    html+=`<label style="display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:5px;cursor:pointer;border:1px solid ${done?'#86efac':'#e2e8f0'};background:${done?'#f0fdf4':'#f8fafc'};font-size:9px">
+      <input type="checkbox" ${done?'checked':''} value="${h.code}" style="accent-color:#3b82f6;width:12px;height:12px">
+      <span style="color:${done?'#166534':'#374151'};flex:1">${h.name}</span>
+      ${done?'<span style="color:#94a3b8;font-size:8px">✓</span>':''}
+    </label>`;
+  });
+  document.getElementById('ht-check-list').innerHTML=html;
+  const now=new Date();
+  document.getElementById('ht-date-inp').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  clearHtPhoto();
+  document.getElementById('desktop-ht-form').style.display='';
+  document.getElementById('desktop-ht-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeHtForm(){document.getElementById('desktop-ht-form').style.display='none';clearHtPhoto();}
+function onHtPhotoSelected(input){const file=input.files[0];if(!file)return;_htPhotoFile=file;document.getElementById('ht-photo-preview').src=URL.createObjectURL(file);document.getElementById('ht-photo-preview-wrap').style.display='';document.getElementById('ht-upload-area').style.display='none';}
+function clearHtPhoto(){_htPhotoFile=null;const p=document.getElementById('ht-photo-preview');if(p)p.src='';const pw=document.getElementById('ht-photo-preview-wrap');if(pw)pw.style.display='none';const ua=document.getElementById('ht-upload-area');if(ua)ua.style.display='';const inp=document.getElementById('ht-photo-input');if(inp)inp.value='';}
+
+async function submitHtUpdate(){
+  const checked=Array.from(document.querySelectorAll('#ht-check-list input[type=checkbox]:checked')).map(cb=>cb.value);
+  if(!checked.length){toast('Chọn ít nhất 1 hạng mục','err');return;}
+  const dateVal=document.getElementById('ht-date-inp').value;
+  if(!dateVal){toast('Chọn ngày','err');return;}
+  const[yr,mo,dy]=dateVal.split('-');const dateStr=`${dy}/${mo}/${yr}`;
+  const btn=document.querySelector('#desktop-ht-form button');
+  if(btn){btn.disabled=true;btn.textContent='Đang lưu...';}
+  const fill=document.getElementById('ht-upload-fill');
+  const prog=document.getElementById('ht-upload-prog');
+  if(prog)prog.style.display='';
+  try{
+    let fileId='',photoTime='';
+    if(_htPhotoFile){
+      const folderId=await driveGetVillaFolder(CUR.id,_htVillaId);
+      const blob=await compressImage(_htPhotoFile);
+      if(fill)fill.style.width='30%';
+      const fid=await driveUploadPhoto(blob,`HT_${checked[0]}.jpg`,folderId,pct=>{if(fill)fill.style.width=pct+'%';});
+      await driveSetPublic(fid);fileId=fid;
+      const now=new Date();
+      photoTime=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+    if(!HT_STATUS[_htVillaId])HT_STATUS[_htVillaId]={};
+    checked.forEach(code=>{HT_STATUS[_htVillaId][code]={status:'done',date:dateStr,fileId:fileId||HT_STATUS[_htVillaId][code]?.fileId||'',photoTime:photoTime||HT_STATUS[_htVillaId][code]?.photoTime||''};});
+    await saveHTStatus();await calcAndSaveKLTongHopHT(_htVillaId);
+    if(fill)fill.style.width='100%';
+    toast(`✓ ${_htVillaId} — ${checked.length} hạng mục HT`);
+    closeHtForm();renderDesktopHTGrid(_htVillaId);renderAll();updateProjSummary();
+  }catch(e){toast('Lỗi: '+e.message,'err');}
+  finally{if(btn){btn.disabled=false;btn.textContent='✓ Lưu HT';}if(prog){prog.style.display='none';}if(fill){fill.style.width='0%';}}
+}
+
+async function saveHTStatus(){
+  if(!CUR||!authToken)return;
+  const rows=[['VillaCode','HTCode','Status','Date','FileId','PhotoTime']];
+  Object.entries(HT_STATUS).forEach(([villa,codes])=>{Object.entries(codes).forEach(([code,v])=>{rows.push([villa,code,v.status||'',v.date||'',v.fileId||'',v.photoTime||'']);});});
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/HTStatus!A1:F10000:clear`,{method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}}).catch(()=>{});
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/HTStatus!A1:F${rows.length}?valueInputOption=RAW`,{method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},body:JSON.stringify({values:rows})});
+}
+
+async function calcAndSaveKLTongHopHT(villaId){
+  if(!CUR||!authToken)return;
+  const status=HT_STATUS[villaId]||{};const klPlan=KL_HT[villaId]||{};
+  const newRows=[];
+  HT_CONFIG.forEach(h=>{const done=status[h.code]&&status[h.code].status==='done';const plan=(klPlan[h.code]&&klPlan[h.code].plan)||0;const kdone=done?plan:0;const pct=plan>0?Math.round(kdone/plan*100):0;newRows.push([villaId,h.code,kdone,plan,pct+'%']);});
+  const existing=await gapi(CUR.sheetId,'KLTongHopHT!A:E');
+  const rows=(existing.values||[]).filter((r,i)=>i===0||r[0]!==villaId);
+  const updated=[...rows,...newRows];
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLTongHopHT!A1:E10000:clear`,{method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}}).catch(()=>{});
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLTongHopHT!A1:E${updated.length}?valueInputOption=USER_ENTERED`,{method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},body:JSON.stringify({values:updated})});
+}
+
+let _htMobPhotoFile=null;
+function onHtMobPhotoSelected(input){const file=input.files[0];if(!file)return;_htMobPhotoFile=file;document.getElementById('bs-ht-photo-preview').src=URL.createObjectURL(file);document.getElementById('bs-ht-photo-preview-wrap').style.display='';document.getElementById('bs-ht-upload-area').style.display='none';}
+function clearHtMobPhoto(){_htMobPhotoFile=null;const p=document.getElementById('bs-ht-photo-preview');if(p)p.src='';const pw=document.getElementById('bs-ht-photo-preview-wrap');if(pw)pw.style.display='none';const ua=document.getElementById('bs-ht-upload-area');if(ua)ua.style.display='';const inp=document.getElementById('bs-ht-photo-input');if(inp)inp.value='';}
+
+function renderMobHTCheckList(villaId){
+  const status=HT_STATUS[villaId]||{};let html='';
+  HT_CONFIG.forEach(h=>{const done=status[h.code]&&status[h.code].status==='done';html+=`<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid ${done?'#334155':'#1e293b'};background:${done?'rgba(52,211,153,.05)':'transparent'};margin-bottom:4px;font-size:12px;color:#f1f5f9"><input type="checkbox" ${done?'checked':''} value="${h.code}" style="accent-color:#a78bfa;width:16px;height:16px"><span style="flex:1">${h.name}</span>${done?`<span style="font-size:10px;color:#34d399">✓</span>`:''}</label>`;});
+  document.getElementById('bs-ht-check-list').innerHTML=html;
+}
+
+async function submitHtMobUpdate(){
+  if(!mobSelId||!CUR){toast('Chưa chọn căn','err');return;}
+  const checked=Array.from(document.querySelectorAll('#bs-ht-check-list input[type=checkbox]:checked')).map(cb=>cb.value);
+  if(!checked.length){toast('Chọn ít nhất 1 hạng mục','err');return;}
+  const dateVal=document.getElementById('bs-ht-date-inp').value;if(!dateVal){toast('Chọn ngày','err');return;}
+  const[yr,mo,dy]=dateVal.split('-');const dateStr=`${dy}/${mo}/${yr}`;
+  const btn=document.querySelector('#bs-pane-edit-ht .bs-save-btn');if(btn){btn.disabled=true;btn.textContent='Đang lưu...';}
+  const fill=document.getElementById('bs-ht-upload-fill');const prog=document.getElementById('bs-ht-upload-prog');prog.style.display='';
+  try{
+    let fileId='',photoTime='';
+    if(_htMobPhotoFile){const folderId=await driveGetVillaFolder(CUR.id,mobSelId);const blob=await compressImage(_htMobPhotoFile);fill.style.width='30%';const fid=await driveUploadPhoto(blob,`HT_${checked[0]}.jpg`,folderId,pct=>{fill.style.width=pct+'%';});await driveSetPublic(fid);fileId=fid;const now=new Date();photoTime=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;}
+    if(!HT_STATUS[mobSelId])HT_STATUS[mobSelId]={};
+    checked.forEach(code=>{HT_STATUS[mobSelId][code]={status:'done',date:dateStr,fileId:fileId||HT_STATUS[mobSelId][code]?.fileId||'',photoTime};});
+    await saveHTStatus();await calcAndSaveKLTongHopHT(mobSelId);
+    fill.style.width='100%';toast(`✓ ${checked.length} hạng mục HT`);
+    switchBsTab('view');renderMobHTList(mobSelId);mobRenderMap();renderAll();updateProjSummary();
+  }catch(e){toast('Lỗi: '+e.message,'err');}
+  finally{if(btn){btn.disabled=false;btn.textContent='✓ Lưu HT';}prog.style.display='none';fill.style.width='0%';}
+}
+
+function switchEdKLTab(tab){
+  document.getElementById('ed-kl-tab-kc').classList.toggle('active',tab==='kc');
+  document.getElementById('ed-kl-tab-ht').classList.toggle('active',tab==='ht');
+  document.getElementById('ep-kl-kc-wrap').style.display=tab==='kc'?'':'none';
+  document.getElementById('ep-kl-ht-wrap').style.display=tab==='ht'?'':'none';
+}
+
+function edBuildHTKLTable(villaId){
+  const container=document.getElementById('ep-ht-kl-rows');if(!container)return;container.innerHTML='';
+  if(!HT_CONFIG.length){container.innerHTML='<div style="padding:8px;font-size:10px;color:#475569">Chưa có HTConfig</div>';return;}
+  const klData=KL_HT[villaId]||{};
+  HT_CONFIG.forEach(h=>{
+    const existing=klData[h.code]||{};const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:1.4fr 1fr 70px;gap:0;border-bottom:1px solid #111827;align-items:center';
+    row.setAttribute('data-ht-code',h.code);
+    const unit=h.workType==='MEP'?'căn':'m²';
+    row.innerHTML=`<div style="padding:5px 8px;font-size:10px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h.name}</div><input class="ht-kl-inp ep-ht-kl-plan" type="number" placeholder="0" step="0.01" value="${existing.plan||''}"><div style="padding:4px 6px;font-size:9px;color:#475569;text-align:center">${unit}</div>`;
+    container.appendChild(row);
+  });
+}
+
+async function edWriteHTKLToSheet(ids){
+  if(!authToken||!CUR||!ids.length)return;
+  const idSet=new Set(ids);const newRows=[];
+  ids.forEach(id=>{
+    document.querySelectorAll('#ep-ht-kl-rows [data-ht-code]').forEach(row=>{
+      const code=row.getAttribute('data-ht-code');
+      const plan=parseFloat(row.querySelector('.ep-ht-kl-plan').value)||0;
+      const htConf=HT_CONFIG.find(h=>h.code===code);
+      newRows.push([id,code,plan,htConf?.workType==='MEP'?'căn':'m²']);
+    });
+  });
+  if(!newRows.length)return;
+  const existing=await gapi(CUR.sheetId,'KLDinhMucHT!A:D');
+  const kept=(existing.values||[]).filter((r,i)=>i===0||!idSet.has(r[0]));
+  const updated=[...kept,...newRows];
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMucHT!A1:D10000:clear`,{method:'POST',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'}}).catch(()=>{});
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CUR.sheetId}/values/KLDinhMucHT!A1:D${updated.length}?valueInputOption=USER_ENTERED`,{method:'PUT',headers:{'Authorization':'Bearer '+authToken,'Content-Type':'application/json'},body:JSON.stringify({values:updated})});
+  ids.forEach(id=>{if(!KL_HT[id])KL_HT[id]={};document.querySelectorAll('#ep-ht-kl-rows [data-ht-code]').forEach(row=>{const code=row.getAttribute('data-ht-code');const plan=parseFloat(row.querySelector('.ep-ht-kl-plan').value)||0;const htConf=HT_CONFIG.find(h=>h.code===code);KL_HT[id][code]={plan,unit:htConf?.workType==='MEP'?'căn':'m²'};});});
+}
+
+// ════════════════════════════════════════
 // RESIZABLE PANELS
 // ════════════════════════════════════════
 function makeResizable(handleId, panelId, storageKey){
@@ -3323,12 +3794,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load logo ngay khi page load
 window.addEventListener('load', () => { loadLogo(); }, true);
-function switchBsTab(tab) {
-  document.getElementById('bs-pane-view').classList.toggle('active', tab==='view');
-  document.getElementById('bs-pane-edit').classList.toggle('active', tab==='edit');
-  document.getElementById('bs-tab-view-btn').classList.toggle('active', tab==='view');
-  document.getElementById('bs-tab-edit-btn').classList.toggle('active', tab==='edit');
-  if(tab==='edit') clearMobPhoto();
+function switchBsTab(tab){
+  document.getElementById('bs-pane-view').classList.toggle('active',tab==='view');
+  document.getElementById('bs-pane-edit').classList.toggle('active',tab==='edit');
+  const htPane=document.getElementById('bs-pane-edit-ht');
+  if(htPane)htPane.classList.toggle('active',tab==='edit-ht');
+  document.getElementById('bs-tab-view-btn').classList.toggle('active',tab==='view');
+  document.getElementById('bs-tab-edit-btn').classList.toggle('active',tab==='edit');
+  const htBtn=document.getElementById('bs-tab-ht-btn');
+  if(htBtn)htBtn.classList.toggle('active',tab==='edit-ht');
+  if(tab==='edit')clearMobPhoto();
+  if(tab==='edit-ht'){
+    clearHtMobPhoto();
+    if(mobSelId)renderMobHTCheckList(mobSelId);
+    const now=new Date();
+    const inp=document.getElementById('bs-ht-date-inp');
+    if(inp)inp.value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
 }
 
 function renderBsTimeline(villaId) {
@@ -3394,9 +3876,10 @@ function openBotSheet(id){
 
   // Luôn bắt đầu ở tab Xem
   switchBsTab('view');
-  // Render timeline + WorkLog table
+  // Render timeline + WorkLog + HT
   renderBsTimeline(id);
   renderMobWLTable(id);
+  renderMobHTList(id);
 
   document.getElementById('bs-overlay').classList.add('show');
   setTimeout(()=>document.getElementById('bottom-sheet').classList.add('show'),10);
